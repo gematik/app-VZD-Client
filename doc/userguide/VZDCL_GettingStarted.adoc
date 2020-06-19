@@ -1,0 +1,8 @@
+include::config.adoc[]
+
+== Getting Started
+
+=== Build setup
+
+soon
+

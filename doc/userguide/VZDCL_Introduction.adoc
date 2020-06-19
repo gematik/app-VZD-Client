@@ -1,0 +1,7 @@
+ifndef::javadoc[]
+include::config.adoc[]
+endif::javadoc[]
+
+== Introduction
+
+This part describes the VZD-Client functionalities and structure.

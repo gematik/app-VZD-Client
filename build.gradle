@@ -1,0 +1,149 @@
+buildscript {
+    dependencies {
+        classpath 'de.gematik:gematik-parent-plugin:1.2.1'
+        classpath 'de.gematik:documentation-plugin:1.1.2'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+apply plugin: 'de.gematik.parent'
+apply plugin: 'de.gematik.publish'
+apply plugin: 'de.gematik.asciidoctor'
+apply plugin: 'distribution'
+
+group = 'de.gematik.ti.epa'
+description = 'Verzeichnisdienst Client'
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java', 'build/generated-sources/jaxb']
+    test.java.srcDirs = ['src/test/java']
+}
+
+javadoc {
+    failOnError = false
+    options.noTimestamp = true
+}
+
+configurations {
+    jaxb
+}
+
+dependencies {
+    implementation 'io.swagger:swagger-annotations:1.5.22'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'io.gsonfire:gson-fire:1.8.3'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:1.0.2'
+    implementation 'org.apache.oltu.oauth2:org.apache.oltu.oauth2.common:1.0.2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+    implementation 'org.slf4j:slf4j-api:1.7.9'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    jaxb 'com.sun.xml.bind:jaxb-xjc:2.3.1'
+    jaxb 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.mockito:mockito-core:3.1.0'
+}
+
+jar {
+    manifest.attributes 'Main-Class': 'de.gematik.ti.epa.vzd.gemClient.Main'
+    baseName 'VZD-CLient'
+    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+task jaxb {
+    description 'Converts xsds to classes'
+    doLast {
+        def jaxbTargetDir = file("build/generated-sources/jaxb/")
+        jaxbTargetDir.mkdirs()
+        ant.taskdef(
+                name: 'xjc',
+                classname: 'com.sun.tools.xjc.XJCTask',
+                classpath: configurations.jaxb.asPath
+        )
+        ant.jaxbTargetDir = jaxbTargetDir
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'generated',
+                schema: 'src/main/resources/xsd/commands.xsd',
+                binding: 'src/main/resources/jaxb-binding/binding.xml',
+                extension: 'true')
+    }
+}
+
+compileJava.dependsOn jaxb
+
+task sourceJar(type: Jar) {
+    classifier "sources"
+    baseName "VZD-CLient"
+    from "${project.buildDir}/../src/main/java/"
+    include "**/*.java"
+}
+
+task testSourceJar(type: Jar) {
+    classifier "test-sources"
+    from "${project.buildDir}/../src/test/java/"
+    include "**/*.java"
+}
+
+task adocJar(type: Jar) {
+    classifier "adoc"
+    from "${project.buildDir}/../doc"
+    into "${project.name}"
+    exclude "**/generated/**/*.*"
+}
+
+task javadocJar(type: Jar) {
+    classifier "javadoc"
+    from "${project.buildDir}/docs/javadoc"
+    into "${project.name}"
+}
+
+artifacts {
+    archives sourceJar
+    archives testSourceJar
+    archives adocJar
+    archives javadocJar
+}
+
+//tasks.withType(Tar) {
+//    enabled = false
+//}
+
+gematikPublish {
+    name = "VZD-Client"
+    description = "VZD-Client to add, remove and change data"
+    gitHubProjectName = "app-VZD-Client"
+}
+
+
+distributions {
+    main {
+        baseName = project.name
+        contents {
+            into(project.name) {
+                from jar
+                rename '(.*)-.*.jar', project.name + '.jar'
+            }
+            into('') {
+                from '.'
+                include 'vorlage_commands_data.xml'
+                include 'doc/**'
+                from 'bspData/'
+                include 'startVzdClient.bat'
+                include 'startVzdC_Log.bat'
+                include 'Beispiel_Config_Datei.txt'
+                include 'Beispiel_Credential_Datei.txt'
+                include 'Beispiel_Command_Datei.xml'
+            }
+        }
+    }
+}

@@ -1,0 +1,3 @@
+base=https://LocationOfVzd:443
+retryingOAuth=https://LocationOfOAuth2Server:8443/oauth/token
+commands=src\main\resources\bspCommands.xml
