@@ -29,6 +29,7 @@ import de.gematik.ti.epa.vzd.gemClient.invoker.GemApiClient;
 import generated.CommandType;
 import generated.UserCertificateType;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,108 +38,106 @@ import org.slf4j.LoggerFactory;
  */
 public class AddDirEntryExecution extends ExecutionBase {
 
-  private final DirectoryEntryAdministrationApi directoryEntryAdministrationApi;
-  private Logger LOG = LoggerFactory.getLogger(AddDirEntryExecution.class);
+    private final DirectoryEntryAdministrationApi directoryEntryAdministrationApi;
+    private Logger LOG = LoggerFactory.getLogger(AddDirEntryExecution.class);
 
-  public AddDirEntryExecution(GemApiClient api) {
-    super(api, CommandNamesEnum.ADD_DIR_ENTRY);
-    directoryEntryAdministrationApi = new GemDirectoryEntryAdministrationApi(apiClient);
-  }
-
-  @Override
-  public boolean checkValidation(CommandType command) {
-    boolean check = true;
-    UserCertificateType userCertificateType = command.getUserCertificate();
-    if (userCertificateType == null) {
-      LOG.error(
-          "Missing element \"UserCertificate\" " + command.getName() + "\n" + Transformer
-              .getBaseDirectoryEntryFromCommandType(command));
-      check = false;
-    } else {
-      String telematikId = userCertificateType.getTelematikID();
-      String userCertificate = userCertificateType.getUserCertificate();
-      if ((StringUtils.isBlank(telematikId) && StringUtils
-          .isBlank(userCertificate))) {
-        check = false;
-      }
-      if (check == false) {
-        LOG.error(
-            "Missing argument -> telematikId or userCertificate for command " + command
-                .getName()
-                + "\n" + Transformer.getBaseDirectoryEntryFromCommandType(command));
-      }
+    public AddDirEntryExecution(GemApiClient api) {
+        super(api, CommandNamesEnum.ADD_DIR_ENTRY);
+        directoryEntryAdministrationApi = new GemDirectoryEntryAdministrationApi(apiClient);
     }
-    return check;
-  }
 
-  @Override
-  public boolean executeCommands() {
-    boolean runSuccessful = true;
-    if (commands.size() == 0) {
-      return true;
-    }
-    for (CommandType command : commands) {
-      if (!isEntryPresent(command)) {
-        try {
-          executeCommand(command);
-        } catch (Exception ex) {
-          LOG.error("An error have occured: " + ex.getMessage() + "\n" + Transformer
-              .getCreateDirectoryEntry(command));
-          runSuccessful = false;
+    @Override
+    public boolean checkValidation(CommandType command) {
+        boolean check = true;
+        if (command.getUserCertificate().isEmpty()) {
+            check = false;
+        } else {
+            for (UserCertificateType userCertificateType : command.getUserCertificate()) {
+                String telematikId = userCertificateType.getTelematikID();
+                String userCertificate = userCertificateType.getUserCertificate();
+                if ((StringUtils.isBlank(telematikId) && StringUtils
+                    .isBlank(userCertificate))) {
+                    check = false;
+                }
+            }
         }
-      } else {
-        runSuccessful = doModify(command);
-      }
-    }
-    return runSuccessful;
-  }
-
-  /**
-   * Function that execute one command and logs the result
-   *
-   * @param command
-   * @return
-   * @throws ApiException
-   */
-  protected ApiResponse<DistinguishedName> executeCommand(CommandType command) throws
-      ApiException {
-    apiClient.validateToken();
-    CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
-    ApiResponse<DistinguishedName> response = directoryEntryAdministrationApi
-        .addDirectoryEntryWithHttpInfo(createDirectoryEntry);
-    if (response.getStatusCode() == 201) {
-      LOG.debug("Add directory entry execution successful operated\n" + response.getData());
-    } else {
-      throw new CommandException(
-          "Add directory entry execution failed. Response-Status was: " + response
-              .getStatusCode() + "\n" + Transformer.getCreateDirectoryEntry(command));
-    }
-    return response;
-  }
-
-  private boolean doModify(CommandType command) {
-    LOG.debug(
-        "Entry is already present in VZD. Will Proceed with modify directory entry command");
-    try {
-      ExecutionCollection.getInstance().getModifyDirEntry().executeCommand(command);
-      return true;
-    } catch (Exception ex) {
-      LOG.error(
-          "Modify directory entry execution failed. " + ex.getMessage() + "\n" + Transformer
-              .getBaseDirectoryEntryFromCommandType(command));
-      return false;
-    }
-  }
-
-  @Override
-  public boolean postCheck() {
-    try {
-      super.postCheck();
-      return true;
-    } catch (Exception ex) {
-      ex.printStackTrace();
+        if (StringUtils.isBlank(command.getCn())) {
+            check = false;
+        }
+        if (check == false) {
+            LOG.error("Missing argument -> cn and telematikId or userCertificate have to be set "
+                + command.getName() + "\n"
+                + Transformer.getBaseDirectoryEntryFromCommandType(command));
+        }
+        return check;
     }
 
-    return false;
-  }
+    @Override
+    public boolean executeCommands() {
+        boolean runSuccessful = true;
+        for (CommandType command : commands) {
+            LOG.debug("--- Command  " + command.getCommandId() + " ---");
+            if (!isEntryPresent(command)) {
+                try {
+                    executeCommand(command);
+                } catch (Exception ex) {
+                    LOG.error("An error have occured: " + ex.getMessage() + "\n"
+                        + Transformer.getCreateDirectoryEntry(command));
+                    runSuccessful = false;
+                }
+            } else {
+                runSuccessful = doModify(command);
+            }
+            LOG.debug("--- Command  " + command.getCommandId() + " end ---");
+        }
+        return runSuccessful;
+    }
+
+    /**
+     * Function that execute one command and logs the result
+     *
+     * @param command
+     * @return
+     * @throws ApiException
+     */
+    protected ApiResponse<DistinguishedName> executeCommand(CommandType command) throws
+        ApiException {
+        apiClient.validateToken();
+
+        CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
+        ApiResponse<DistinguishedName> response = directoryEntryAdministrationApi
+            .addDirectoryEntryWithHttpInfo(createDirectoryEntry);
+        if (response.getStatusCode() == HttpStatus.SC_CREATED) {
+            LOG.debug("Add directory entry execution successful operated\n" + response.getData());
+        } else {
+            throw new CommandException(
+                "Add directory entry execution failed. Response-Status was: " + response
+                    .getStatusCode() + "\n" + Transformer.getCreateDirectoryEntry(command));
+        }
+        return response;
+    }
+
+    private boolean doModify(CommandType command) {
+        LOG.debug(
+            "Entry is already present in VZD. Will Proceed with modify directory entry command");
+        try {
+            ExecutionCollection.getInstance().getModifyDirEntry().executeCommand(command);
+            return true;
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean postCheck() {
+        try {
+            super.postCheck();
+            return true;
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+        }
+
+        return false;
+    }
 }

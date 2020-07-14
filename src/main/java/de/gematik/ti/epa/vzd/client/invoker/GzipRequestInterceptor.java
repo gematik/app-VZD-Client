@@ -29,16 +29,13 @@
 
 package de.gematik.ti.epa.vzd.client.invoker;
 
-import java.io.IOException;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.GzipSink;
 import okio.Okio;
+
+import java.io.IOException;
 
 /**
  * Encodes request bodies using gzip.
@@ -47,59 +44,59 @@ import okio.Okio;
  */
 class GzipRequestInterceptor implements Interceptor {
 
-  @Override
-  public Response intercept(Chain chain) throws IOException {
-    Request originalRequest = chain.request();
-    if (originalRequest.body() == null || originalRequest.header("Content-Encoding") != null) {
-      return chain.proceed(originalRequest);
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request originalRequest = chain.request();
+        if (originalRequest.body() == null || originalRequest.header("Content-Encoding") != null) {
+            return chain.proceed(originalRequest);
+        }
+
+        Request compressedRequest = originalRequest.newBuilder()
+            .header("Content-Encoding", "gzip")
+            .method(originalRequest.method(), forceContentLength(gzip(originalRequest.body())))
+            .build();
+        return chain.proceed(compressedRequest);
     }
 
-    Request compressedRequest = originalRequest.newBuilder()
-        .header("Content-Encoding", "gzip")
-        .method(originalRequest.method(), forceContentLength(gzip(originalRequest.body())))
-        .build();
-    return chain.proceed(compressedRequest);
-  }
+    private RequestBody forceContentLength(final RequestBody requestBody) throws IOException {
+        final Buffer buffer = new Buffer();
+        requestBody.writeTo(buffer);
+        return new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return requestBody.contentType();
+            }
 
-  private RequestBody forceContentLength(final RequestBody requestBody) throws IOException {
-    final Buffer buffer = new Buffer();
-    requestBody.writeTo(buffer);
-    return new RequestBody() {
-      @Override
-      public MediaType contentType() {
-        return requestBody.contentType();
-      }
+            @Override
+            public long contentLength() {
+                return buffer.size();
+            }
 
-      @Override
-      public long contentLength() {
-        return buffer.size();
-      }
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                sink.write(buffer.snapshot());
+            }
+        };
+    }
 
-      @Override
-      public void writeTo(BufferedSink sink) throws IOException {
-        sink.write(buffer.snapshot());
-      }
-    };
-  }
+    private RequestBody gzip(final RequestBody body) {
+        return new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return body.contentType();
+            }
 
-  private RequestBody gzip(final RequestBody body) {
-    return new RequestBody() {
-      @Override
-      public MediaType contentType() {
-        return body.contentType();
-      }
+            @Override
+            public long contentLength() {
+                return -1; // We don't know the compressed length in advance!
+            }
 
-      @Override
-      public long contentLength() {
-        return -1; // We don't know the compressed length in advance!
-      }
-
-      @Override
-      public void writeTo(BufferedSink sink) throws IOException {
-        BufferedSink gzipSink = Okio.buffer(new GzipSink(sink));
-        body.writeTo(gzipSink);
-        gzipSink.close();
-      }
-    };
-  }
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                BufferedSink gzipSink = Okio.buffer(new GzipSink(sink));
+                body.writeTo(gzipSink);
+                gzipSink.close();
+            }
+        };
+    }
 }

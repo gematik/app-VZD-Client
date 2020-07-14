@@ -25,6 +25,8 @@ import de.gematik.ti.epa.vzd.gemClient.command.Transformer;
 import de.gematik.ti.epa.vzd.gemClient.exceptions.CommandException;
 import de.gematik.ti.epa.vzd.gemClient.invoker.GemApiClient;
 import generated.CommandType;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,82 +35,85 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteDirEntryExecution extends ExecutionBase {
 
-  private Logger LOG = LoggerFactory.getLogger(DeleteDirEntryExecution.class);
+    private Logger LOG = LoggerFactory.getLogger(DeleteDirEntryExecution.class);
 
-  private final DirectoryEntryAdministrationApi directoryEntryAdministrationApi;
+    private final DirectoryEntryAdministrationApi directoryEntryAdministrationApi;
 
-  public DeleteDirEntryExecution(GemApiClient api) {
-    super(api, CommandNamesEnum.DEL_DIR_ENTRY);
-    directoryEntryAdministrationApi = new GemDirectoryEntryAdministrationApi(apiClient);
-  }
+    public DeleteDirEntryExecution(GemApiClient api) {
+        super(api, CommandNamesEnum.DEL_DIR_ENTRY);
+        directoryEntryAdministrationApi = new GemDirectoryEntryAdministrationApi(apiClient);
+    }
 
-  @Override
-  public boolean checkValidation(CommandType command) {
-    boolean check = true;
-    if (command.getDn() != null) {
-      if (command.getDn().getUid() == null || command.getDn().getUid().equals("")) {
-        LOG.error(
-            "Missing argument -> uid for command " + command.getName() + "\n" + Transformer
+    @Override
+    public boolean checkValidation(CommandType command) {
+        boolean check = true;
+        if (command.getDn() != null) {
+            if (StringUtils.isBlank(command.getDn().getUid())) {
+                LOG.error(
+                    "Missing argument -> uid for command " + command.getName() + "\n" + Transformer
+                        .getBaseDirectoryEntryFromCommandType(command));
+                check = false;
+            }
+        } else {
+            LOG.error("Missing element \"dn\" " + command.getName() + "\n" + Transformer
                 .getBaseDirectoryEntryFromCommandType(command));
-        check = false;
-      }
-    } else {
-      LOG.error("Missing element \"dn\" " + command.getName() + "\n" + Transformer
-          .getBaseDirectoryEntryFromCommandType(command));
-      check = false;
-    }
-    return check;
-  }
-
-  @Override
-  public boolean executeCommands() {
-    boolean runSuccessful = true;
-    if (commands.size() == 0) {
-      return true;
-    }
-    for (CommandType command : commands) {
-      if (isEntryPresent(command)) {
-        try {
-          executeCommand(command);
-        } catch (Exception ex) {
-          LOG.error("An error have occured: " + ex.getMessage());
-          runSuccessful = false;
+            check = false;
         }
-      } else {
-        LOG.debug(command.getDn().getUid() + " could not be found");
-        runSuccessful = false;
-      }
-    }
-    return runSuccessful;
-  }
-
-  private void executeCommand(CommandType command) throws ApiException {
-    apiClient.validateToken();
-    ApiResponse<Void> response = directoryEntryAdministrationApi
-        .deleteDirectoryEntryWithHttpInfo(command.getDn().getUid());
-    if (response.getStatusCode() == 200) {
-      LOG.debug("Delete directory entry execution successful operated for " + command.getDn()
-          .getUid());
-    } else if (response.getStatusCode() == 404) {
-      LOG.debug(command.getDn().getUid() + " could not be found");
-      throw new CommandException(command.getDn().getUid() + " could not be found");
-    } else {
-      throw new CommandException(
-          "Delete directory entry execution failed. Response-Status was: " + response
-              .getStatusCode() + "\n" + Transformer
-              .getBaseDirectoryEntryFromCommandType(command));
-    }
-  }
-
-  @Override
-  public boolean postCheck() {
-    try {
-      super.postCheck();
-      return true;
-    } catch (Exception ex) {
-      ex.printStackTrace();
+        return check;
     }
 
-    return false;
-  }
+    @Override
+    public boolean executeCommands() {
+        boolean runSuccessful = true;
+        if (commands.isEmpty()) {
+            return true;
+        }
+        for (CommandType command : commands) {
+            LOG.debug("--- Command  " + command.getCommandId() + " ---");
+            if (isEntryPresent(command)) {
+                try {
+                    executeCommand(command);
+                } catch (Exception ex) {
+                    LOG.error("An error have occured: " + ex.getMessage());
+                    runSuccessful = false;
+                }
+            } else {
+                LOG.debug(command.getDn().getUid() + " could not be found");
+                runSuccessful = false;
+            }
+            LOG.debug("--- Command  " + command.getCommandId() + " end ---");
+        }
+        return runSuccessful;
+    }
+
+    private void executeCommand(CommandType command) throws ApiException {
+        apiClient.validateToken();
+
+        ApiResponse<Void> response = directoryEntryAdministrationApi
+            .deleteDirectoryEntryWithHttpInfo(command.getDn().getUid());
+        if (response.getStatusCode() == HttpStatus.SC_OK) {
+            LOG.debug("Delete directory entry execution successful operated for " + command.getDn()
+                .getUid());
+        } else if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+            LOG.debug(command.getDn().getUid() + " could not be found");
+            throw new CommandException(command.getDn().getUid() + " could not be found");
+        } else {
+            throw new CommandException(
+                "Delete directory entry execution failed. Response-Status was: "
+                    + response.getStatusCode() + "\n"
+                    + Transformer.getBaseDirectoryEntryFromCommandType(command));
+        }
+    }
+
+    @Override
+    public boolean postCheck() {
+        try {
+            super.postCheck();
+            return true;
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+        }
+
+        return false;
+    }
 }

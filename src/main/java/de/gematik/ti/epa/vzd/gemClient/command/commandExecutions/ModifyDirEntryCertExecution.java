@@ -28,7 +28,9 @@ import de.gematik.ti.epa.vzd.gemClient.exceptions.CommandException;
 import de.gematik.ti.epa.vzd.gemClient.invoker.GemApiClient;
 import generated.CommandType;
 import generated.DistinguishedNameType;
+import generated.UserCertificateType;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,81 +39,81 @@ import org.slf4j.LoggerFactory;
  */
 public class ModifyDirEntryCertExecution extends ExecutionBase {
 
-  private Logger LOG = LoggerFactory.getLogger(ModifyDirEntryExecution.class);
-  private CertificateAdministrationApi certificateAdministrationApi;
+    private Logger LOG = LoggerFactory.getLogger(ModifyDirEntryCertExecution.class);
+    private CertificateAdministrationApi certificateAdministrationApi;
 
-  public ModifyDirEntryCertExecution(GemApiClient api) {
-    super(api, CommandNamesEnum.MOD_DIR_CERT);
-    certificateAdministrationApi = new GemCertificateAdministrationApi(apiClient);
-  }
+    public ModifyDirEntryCertExecution(GemApiClient api) {
+        super(api, CommandNamesEnum.MOD_DIR_CERT);
+        certificateAdministrationApi = new GemCertificateAdministrationApi(apiClient);
+    }
 
-  @Override
-  public boolean checkValidation(CommandType command) {
-    if (command.getUserCertificate() != null) {
-      if (command.getUserCertificate().getDn() != null) {
-        DistinguishedNameType dn = command.getUserCertificate().getDn();
-        if (StringUtils.isBlank(dn.getUid()) || StringUtils.isBlank(dn.getCn())) {
-          return false;
+    @Override
+    public boolean checkValidation(CommandType command) {
+        if (command.getUserCertificate() != null) {
+            for (UserCertificateType cert : command.getUserCertificate()) {
+                if (checkSingleUserCertificate(cert)) {
+                    return false;
+                }
+            }
         }
-      }
-    }
-    return true;
-  }
-
-  @Override
-  public boolean executeCommands() {
-    LOG.info("The execution for ModifyCertificate is exposed");
-    return true;
-//        boolean runSuccessful = true;
-//        if (commands.size() == 0) {
-//            return true;
-//        }
-//        for (CommandType command : commands) {
-//            try {
-//                executeCommand(command);
-//            } catch (Exception ex) {
-//                runSuccessful = false;
-//                ex.printStackTrace();
-//            }
-//        }
-//        return runSuccessful;
-  }
-
-  protected ApiResponse<UserCertificate> executeCommand(CommandType command) {
-    apiClient.validateToken();
-    CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
-    ApiResponse<UserCertificate> response = null;
-
-    for (UserCertificate userCertificate : createDirectoryEntry.getUserCertificates()) {
-      try {
-        response = certificateAdministrationApi
-            .modifyDirectoryEntryCertificateWithHttpInfo(userCertificate.getDn().getUid(),
-                userCertificate.getDn().getCn(), userCertificate);
-      } catch (ApiException e) {
-        e.printStackTrace();
-      }
-      if (response.getStatusCode() == 200) {
-        LOG.debug(
-            "Modify directory entry execution successful operated\n" + response.getData());
-      } else {
-        throw new CommandException(
-            "Modify directory entry execution failed. Response-Status was: " + response
-                .getStatusCode() + "\n" + Transformer
-                .getBaseDirectoryEntryFromCommandType(command));
-      }
-    }
-    return response;
-  }
-
-  @Override
-  public boolean postCheck() {
-    try {
-      super.postCheck();
-      return true;
-    } catch (Exception ex) {
-      ex.printStackTrace();
+        return true;
     }
 
-    return false;
-  }
+    private boolean checkSingleUserCertificate(UserCertificateType cert) {
+        if (cert.getDn() != null) {
+            DistinguishedNameType dn = cert.getDn();
+            if (StringUtils.isBlank(dn.getUid()) || StringUtils.isBlank(dn.getCn())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean executeCommands() {
+        if (commands.size() == 0) {
+            return true;
+        }
+        LOG.info("The execution for ModifyCertificate is exposed");
+        return true;
+    }
+
+    protected ApiResponse<UserCertificate> executeCommand(CommandType command) {
+        apiClient.validateToken();
+
+        CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
+        ApiResponse<UserCertificate> response = null;
+
+        for (UserCertificate userCertificate : createDirectoryEntry.getUserCertificates()) {
+            try {
+                response = certificateAdministrationApi
+                    .modifyDirectoryEntryCertificateWithHttpInfo(userCertificate.getDn().getUid(),
+                        userCertificate.getDn().getCn(), userCertificate);
+                if (response.getStatusCode() == HttpStatus.SC_OK) {
+                    LOG.debug(
+                        "Modify directory entry execution successful operated\n" + response.getData());
+                } else {
+                    throw new CommandException(
+                        "Modify directory entry execution failed. Response-Status was: " + response
+                            .getStatusCode() + "\n" + Transformer
+                            .getBaseDirectoryEntryFromCommandType(command));
+                }
+            } catch (ApiException e) {
+                e.printStackTrace();
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public boolean postCheck() {
+        try {
+            super.postCheck();
+            return true;
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+        }
+
+        return false;
+    }
 }

@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2020 gematik GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *    http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.gematik.ti.epa.vzd.gemClient.command.commandExecutions;
 
 import static org.junit.Assert.assertFalse;
@@ -133,6 +117,7 @@ public class ReadDirEntryExecutionTest {
         command.setOtherName("TestString");
         assertTrue(readDirEntryExecution.checkValidation(command));
     }
+
     @Test
     public void checkValidationHaveSpecializationTest() {
         ReadDirEntryExecution readDirEntryExecution = new ReadDirEntryExecution(gemApiClient);
@@ -140,22 +125,25 @@ public class ReadDirEntryExecutionTest {
         command.getSpecialization().add("TestString");
         assertTrue(readDirEntryExecution.checkValidation(command));
     }
-     @Test
+
+    @Test
     public void checkValidationHaveDomainIDTest() {
         ReadDirEntryExecution readDirEntryExecution = new ReadDirEntryExecution(gemApiClient);
         CommandType command = new CommandType();
         command.getDomainID().add("TestString");
-         assertTrue(readDirEntryExecution.checkValidation(command));
+        assertTrue(readDirEntryExecution.checkValidation(command));
     }
+
     @Test
-    public void checkValidationHavePersonalEntryTest(){
+    public void checkValidationHavePersonalEntryTest() {
         ReadDirEntryExecution readDirEntryExecution = new ReadDirEntryExecution(gemApiClient);
         CommandType command = new CommandType();
         command.setPersonalEntry("TestString");
         assertTrue(readDirEntryExecution.checkValidation(command));
     }
+
     @Test
-    public void checkValidationHaveDataFromAuthorityTest(){
+    public void checkValidationHaveDataFromAuthorityTest() {
         ReadDirEntryExecution readDirEntryExecution = new ReadDirEntryExecution(gemApiClient);
         CommandType command = new CommandType();
         command.setDataFromAuthority("TestString");

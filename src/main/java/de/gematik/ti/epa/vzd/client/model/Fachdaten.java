@@ -29,11 +29,20 @@
 
 package de.gematik.ti.epa.vzd.client.model;
 
+import java.util.Objects;
+import java.util.Arrays;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import de.gematik.ti.epa.vzd.client.model.DistinguishedName;
+import de.gematik.ti.epa.vzd.client.model.FAD1;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Fachdaten
@@ -41,108 +50,108 @@ import java.util.Objects;
 
 public class Fachdaten {
 
-  public static final String SERIALIZED_NAME_DN = "dn";
-  @SerializedName(SERIALIZED_NAME_DN)
-  private DistinguishedName dn;
+    public static final String SERIALIZED_NAME_DN = "dn";
+    @SerializedName(SERIALIZED_NAME_DN)
+    private DistinguishedName dn;
 
-  public static final String SERIALIZED_NAME_F_A_D1 = "FAD1";
-  @SerializedName(SERIALIZED_NAME_F_A_D1)
-  private List<FAD1> FAD1 = null;
-
-
-  public Fachdaten dn(DistinguishedName dn) {
-
-    this.dn = dn;
-    return this;
-  }
-
-  /**
-   * Get dn
-   *
-   * @return dn
-   **/
-  @ApiModelProperty(required = true, value = "")
-
-  public DistinguishedName getDn() {
-    return dn;
-  }
+    public static final String SERIALIZED_NAME_F_A_D1 = "FAD1";
+    @SerializedName(SERIALIZED_NAME_F_A_D1)
+    private List<FAD1> FAD1 = null;
 
 
-  public void setDn(DistinguishedName dn) {
-    this.dn = dn;
-  }
+    public Fachdaten dn(DistinguishedName dn) {
 
-
-  public Fachdaten FAD1(List<FAD1> FAD1) {
-
-    this.FAD1 = FAD1;
-    return this;
-  }
-
-  public Fachdaten addFAD1Item(FAD1 FAD1Item) {
-    if (this.FAD1 == null) {
-      this.FAD1 = new ArrayList<>();
+        this.dn = dn;
+        return this;
     }
-    this.FAD1.add(FAD1Item);
-    return this;
-  }
 
-  /**
-   * Get FAD1
-   *
-   * @return FAD1
-   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+    /**
+     * Get dn
+     *
+     * @return dn
+     **/
+    @ApiModelProperty(required = true, value = "")
 
-  public List<FAD1> getFAD1() {
-    return FAD1;
-  }
-
-
-  public void setFAD1(List<FAD1> FAD1) {
-    this.FAD1 = FAD1;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+    public DistinguishedName getDn() {
+        return dn;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+
+    public void setDn(DistinguishedName dn) {
+        this.dn = dn;
     }
-    Fachdaten fachdaten = (Fachdaten) o;
-    return Objects.equals(this.dn, fachdaten.dn) &&
-        Objects.equals(this.FAD1, fachdaten.FAD1);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(dn, FAD1);
-  }
 
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class Fachdaten {\n");
-    sb.append("    dn: ").append(toIndentedString(dn)).append("\n");
-    sb.append("    FAD1: ").append(toIndentedString(FAD1)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+    public Fachdaten FAD1(List<FAD1> FAD1) {
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+        this.FAD1 = FAD1;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public Fachdaten addFAD1Item(FAD1 FAD1Item) {
+        if (this.FAD1 == null) {
+            this.FAD1 = new ArrayList<>();
+        }
+        this.FAD1.add(FAD1Item);
+        return this;
+    }
+
+    /**
+     * Get FAD1
+     *
+     * @return FAD1
+     **/
+    @javax.annotation.Nullable
+    @ApiModelProperty(value = "")
+
+    public List<FAD1> getFAD1() {
+        return FAD1;
+    }
+
+
+    public void setFAD1(List<FAD1> FAD1) {
+        this.FAD1 = FAD1;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Fachdaten fachdaten = (Fachdaten) o;
+        return Objects.equals(this.dn, fachdaten.dn) &&
+            Objects.equals(this.FAD1, fachdaten.FAD1);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dn, FAD1);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class Fachdaten {\n");
+        sb.append("    dn: ").append(toIndentedString(dn)).append("\n");
+        sb.append("    FAD1: ").append(toIndentedString(FAD1)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

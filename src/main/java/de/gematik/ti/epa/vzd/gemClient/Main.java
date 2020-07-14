@@ -28,31 +28,31 @@ import org.slf4j.LoggerFactory;
 
 public final class Main {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-  public static void main(final String[] args) {
-    LOG.info("VZD-Client started");
-    LOG.info(GemStringUtils.getPic());
-    ConfigHandler.init(args);
-    start();
-  }
+    public static void main(final String[] args) {
+        LOG.info("VZD-Client started");
+        LOG.info(GemStringUtils.getPic());
+        ConfigHandler.init(args);
+        start();
+    }
 
-  private static void start() {
-    ExecutionCollection.init(new GemApiClient());
-    List<CommandType> commands = new CommandsBuilder().buildCommands();
-    ConfigHandler configHandler = ConfigHandler.getInstance();
-    LOG.debug("============ Execution parameter ============");
-    LOG.debug("Server: " + configHandler.getBasePath());
-    LOG.debug("OAuth Server: " + configHandler.getRetryingOAuthPath());
-    LOG.debug("Command data: " + configHandler.getCommandsPath());
-    LOG.debug("Commands in progress: " + commands.size());
-    LOG.debug("=============================================");
-    new ExecutionController().execute(commands);
-  }
+    private static void start() {
+        ExecutionCollection.init(new GemApiClient());
+        List<CommandType> commands = new CommandsBuilder().buildCommands();
+        ConfigHandler configHandler = ConfigHandler.getInstance();
+        LOG.debug("============ Execution parameter ============");
+        LOG.debug("Server: " + configHandler.getBasePath());
+        LOG.debug("OAuth Server: " + configHandler.getRetryingOAuthPath());
+        LOG.debug("Command data: " + configHandler.getCommandsPath());
+        LOG.debug("Commands in progress: " + commands.size());
+        LOG.debug("=============================================");
+        new ExecutionController().execute(commands);
+    }
 
-  // <editor-fold desc="Private Constructor">
-  private Main() {
-    super();
-  }
-  // </editor-fold>
+    // <editor-fold desc="Private Constructor">
+    private Main() {
+        super();
+    }
+    // </editor-fold>
 }

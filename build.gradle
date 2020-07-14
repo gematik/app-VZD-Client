@@ -43,6 +43,7 @@ dependencies {
     implementation 'org.apache.oltu.oauth2:org.apache.oltu.oauth2.common:1.0.2'
     implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
     implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+    implementation 'org.apache.httpcomponents:httpclient:4.5'
     implementation 'org.slf4j:slf4j-api:1.7.9'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
@@ -114,16 +115,11 @@ artifacts {
     archives javadocJar
 }
 
-//tasks.withType(Tar) {
-//    enabled = false
-//}
-
 gematikPublish {
     name = "VZD-Client"
     description = "VZD-Client to add, remove and change data"
     gitHubProjectName = "app-VZD-Client"
 }
-
 
 distributions {
     main {

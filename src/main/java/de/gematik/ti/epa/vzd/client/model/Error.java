@@ -29,9 +29,16 @@
 
 package de.gematik.ti.epa.vzd.client.model;
 
-import com.google.gson.annotations.SerializedName;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
+import java.util.Arrays;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.IOException;
 
 /**
  * Error
@@ -39,101 +46,101 @@ import java.util.Objects;
 
 public class Error {
 
-  public static final String SERIALIZED_NAME_ATTRIBUTE_NAME = "attributeName";
-  @SerializedName(SERIALIZED_NAME_ATTRIBUTE_NAME)
-  private String attributeName;
+    public static final String SERIALIZED_NAME_ATTRIBUTE_NAME = "attributeName";
+    @SerializedName(SERIALIZED_NAME_ATTRIBUTE_NAME)
+    private String attributeName;
 
-  public static final String SERIALIZED_NAME_ATTRIBUTE_ERROR = "attributeError";
-  @SerializedName(SERIALIZED_NAME_ATTRIBUTE_ERROR)
-  private String attributeError;
-
-
-  public Error attributeName(String attributeName) {
-
-    this.attributeName = attributeName;
-    return this;
-  }
-
-  /**
-   * Name des Attributs, in dem ein Fehler erkannt wurde
-   *
-   * @return attributeName
-   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "Name des Attributs, in dem ein Fehler erkannt wurde")
-
-  public String getAttributeName() {
-    return attributeName;
-  }
+    public static final String SERIALIZED_NAME_ATTRIBUTE_ERROR = "attributeError";
+    @SerializedName(SERIALIZED_NAME_ATTRIBUTE_ERROR)
+    private String attributeError;
 
 
-  public void setAttributeName(String attributeName) {
-    this.attributeName = attributeName;
-  }
+    public Error attributeName(String attributeName) {
 
-
-  public Error attributeError(String attributeError) {
-
-    this.attributeError = attributeError;
-    return this;
-  }
-
-  /**
-   * Beschreibung des erkannten Fehlers
-   *
-   * @return attributeError
-   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "Beschreibung des erkannten Fehlers")
-
-  public String getAttributeError() {
-    return attributeError;
-  }
-
-
-  public void setAttributeError(String attributeError) {
-    this.attributeError = attributeError;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+        this.attributeName = attributeName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Name des Attributs, in dem ein Fehler erkannt wurde
+     *
+     * @return attributeName
+     **/
+    @javax.annotation.Nullable
+    @ApiModelProperty(value = "Name des Attributs, in dem ein Fehler erkannt wurde")
+
+    public String getAttributeName() {
+        return attributeName;
     }
-    Error error = (Error) o;
-    return Objects.equals(this.attributeName, error.attributeName) &&
-        Objects.equals(this.attributeError, error.attributeError);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(attributeName, attributeError);
-  }
 
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class Error {\n");
-    sb.append("    attributeName: ").append(toIndentedString(attributeName)).append("\n");
-    sb.append("    attributeError: ").append(toIndentedString(attributeError)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+
+    public Error attributeError(String attributeError) {
+
+        this.attributeError = attributeError;
+        return this;
+    }
+
+    /**
+     * Beschreibung des erkannten Fehlers
+     *
+     * @return attributeError
+     **/
+    @javax.annotation.Nullable
+    @ApiModelProperty(value = "Beschreibung des erkannten Fehlers")
+
+    public String getAttributeError() {
+        return attributeError;
+    }
+
+
+    public void setAttributeError(String attributeError) {
+        this.attributeError = attributeError;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Error error = (Error) o;
+        return Objects.equals(this.attributeName, error.attributeName) &&
+            Objects.equals(this.attributeError, error.attributeError);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attributeName, attributeError);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class Error {\n");
+        sb.append("    attributeName: ").append(toIndentedString(attributeName)).append("\n");
+        sb.append("    attributeError: ").append(toIndentedString(attributeError)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

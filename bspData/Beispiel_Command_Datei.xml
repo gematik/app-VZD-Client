@@ -1,89 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <CommandList>
 	<Command>
-		<name>modifyDirectoryEntries</name>
-		<dn>
-			<uid>ModTest</uid>
-			<cn>cn</cn>
-			<ou>ou</ou>
-			<ou>ou2</ou>
-			<dc>dc</dc>
-			<dc>dc2</dc>
-		</dn>
-		<displayName>displayName</displayName>
-		<otherName>otherName</otherName>
-		<streetAddress>streetAddress</streetAddress>
-		<postalCode>postalCode</postalCode>
-		<localityName>localityName</localityName>
-		<stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
-		<title>title</title>
-		<organization>organization</organization>
-		<specialization>specialization</specialization>
-		<domainID>domainID</domainID>
-	</Command>
-	<Command>
-		<name>modifyDirectoryEntries</name>
-		<dn>
-			<uid>ModTest2</uid>
-		</dn>
-		<displayName>displayName2</displayName>
-		<otherName>otherName2</otherName>
-		<streetAddress>streetAddress2</streetAddress>
-		<postalCode>postalCode2</postalCode>
-		<localityName>localityName2</localityName>
-		<stateOrProvinceName>stateOrProvinceName2</stateOrProvinceName>
-		<title>title2</title>
-		<organization>organization2</organization>
-		<specialization>specialization2</specialization>
-		<domainID>domainID2</domainID>
-	</Command>
-	<Command>
 		<name>readDirectoryEntries</name>
 		<dn>
-			<uid>ReadTest</uid>
-			<cn>cn</cn>
-			<ou>ou</ou>
-			<ou>ou2</ou>
-			<dc>dc</dc>
-			<dc>dc2</dc>
+			<uid>uid</uid>
 		</dn>
-		<displayName>displayName</displayName>
-		<otherName>otherName</otherName>
-		<streetAddress>streetAddress</streetAddress>
-		<postalCode>postalCode</postalCode>
-		<localityName>localityName</localityName>
-		<stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
-		<title>title</title>
-		<organization>organization</organization>
-		<specialization>specialization</specialization>
-		<domainID>domainID</domainID>
-	</Command>
-	<Command>
-		<name>readDirectoryEntries</name>
-		<dn>
-			<uid>ReadTest</uid>
-		</dn>
-		<displayName>displayName2</displayName>
-		<otherName>otherName2</otherName>
-		<streetAddress>streetAddress2</streetAddress>
-		<postalCode>postalCode2</postalCode>
-		<localityName>localityName2</localityName>
-		<stateOrProvinceName>stateOrProvinceName2</stateOrProvinceName>
-		<title>title2</title>
-		<organization>organization2</organization>
-		<specialization>specialization2</specialization>
-		<domainID>domainID2</domainID>
-	</Command>
-	<Command>
-		<name>addDirectoryEntries</name>
-		<dn>
-			<uid>AddTest</uid>
-			<cn>cn</cn>
-			<ou>ou</ou>
-			<ou>ou2</ou>
-			<dc>dc</dc>
-			<dc>dc2</dc>
-		</dn>
+		<cn>cn</cn>
+		<givenName>givenName</givenName>
+		<sn>sn</sn>
 		<displayName>displayName</displayName>
 		<otherName>otherName</otherName>
 		<streetAddress>streetAddress</streetAddress>
@@ -95,63 +19,80 @@
 		<specialization>specialization</specialization>
 		<domainID>domainID</domainID>
 		<UserCertificate>
-			<telematikID>SomeTelematikid</telematikID>
+			<telematikID>telematikId</telematikID>
 		</UserCertificate>
 	</Command>
 	<Command>
 		<name>addDirectoryEntries</name>
-		<dn>
-			<uid>AddTest2</uid>
-		</dn>
-		<displayName>displayName2</displayName>
-		<otherName>otherName2</otherName>
-		<streetAddress>streetAddress2</streetAddress>
-		<postalCode>postalCode2</postalCode>
-		<localityName>localityName2</localityName>
-		<stateOrProvinceName>stateOrProvinceName2</stateOrProvinceName>
-		<title>title2</title>
-		<organization>organization2</organization>
-		<specialization>specialization2</specialization>
-		<domainID>domainID2</domainID>
-		<UserCertificate>
-			<userCertificate>SomeUserCertificate</userCertificate>
-		</UserCertificate>
-	</Command>
-	<Command>
-		<name>deleteDirectoryEntries</name>
-		<dn>
-			<uid>DelTest</uid>
-			<cn>cn</cn>
-			<ou>ou</ou>
-			<ou>ou2</ou>
-			<dc>dc</dc>
-			<dc>dc2</dc>
-		</dn>
 		<displayName>displayName</displayName>
-		<otherName>otherName</otherName>
 		<streetAddress>streetAddress</streetAddress>
 		<postalCode>postalCode</postalCode>
 		<localityName>localityName</localityName>
 		<stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
 		<title>title</title>
 		<organization>organization</organization>
+		<otherName>otherName</otherName>
+		<specialization>specialization</specialization>
+		<domainID>domainID</domainID>
+		<UserCertificate>
+			<telematikID>telematikId</telematikID>
+			<usage>usage</usage>
+			<userCertificate>userCertificate</userCertificate>
+			<description>description</description>
+		</UserCertificate>
+	</Command>
+	<Command>
+		<name>modifyDirectoryEntries</name>
+		<dn>
+			<uid>uid</uid>
+		</dn>
+		<cn>cn</cn>
+		<displayName>displayName</displayName>
+		<streetAddress>streetAddress</streetAddress>
+		<postalCode>postalCode</postalCode>
+		<localityName>localityName</localityName>
+		<stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
+		<title>title</title>
+		<organization>organization</organization>
+		<otherName>otherName</otherName>
 		<specialization>specialization</specialization>
 		<domainID>domainID</domainID>
 	</Command>
 	<Command>
 		<name>deleteDirectoryEntries</name>
 		<dn>
-			<uid>DelTest2</uid>
+			<uid>uid</uid>
 		</dn>
-		<displayName>displayName2</displayName>
-		<otherName>otherName2</otherName>
-		<streetAddress>streetAddress2</streetAddress>
-		<postalCode>postalCode2</postalCode>
-		<localityName>localityName2</localityName>
-		<stateOrProvinceName>stateOrProvinceName2</stateOrProvinceName>
-		<title>title2</title>
-		<organization>organization2</organization>
-		<specialization>specialization2</specialization>
-		<domainID>domainID2</domainID>
+	</Command>
+	<Command>
+		<name>addDirectoryEntryCertificate</name>
+		<UserCertificate>
+			<telematikID>1-HBA-Testkarte-883110000218572</telematikID>
+			<dn>
+				<uid>uid</uid>
+			</dn>
+			<usage>usage</usage>
+			<userCertificate>userCertificate</userCertificate>
+			<description>description</description>
+		</UserCertificate>
+	</Command>
+	<Command>
+		<name>readDirectoryEntryCertificate</name>
+		<UserCertificate>
+			<telematikID>telematikId</telematikID>
+			<entryType>entryType</entryType>
+			<usage>usage</usage>
+			<professionOID>professionOID</professionOID>
+		</UserCertificate>
+	</Command>
+	<Command>
+		<name>deleteDirectoryEntryCertificate</name>
+		<UserCertificate>
+			<telematikID>telematikId</telematikID>
+			<dn>
+				<uid>uid</uid>
+				<cn>cn</cn>
+			</dn>
+		</UserCertificate>
 	</Command>
 </CommandList>

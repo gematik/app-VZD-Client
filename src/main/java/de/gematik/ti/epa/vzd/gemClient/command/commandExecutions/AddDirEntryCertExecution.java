@@ -30,7 +30,10 @@ import de.gematik.ti.epa.vzd.gemClient.exceptions.CommandException;
 import de.gematik.ti.epa.vzd.gemClient.invoker.GemApiClient;
 import generated.CommandType;
 import generated.DistinguishedNameType;
+import generated.UserCertificateType;
+import java.security.cert.CertificateRevokedException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,138 +42,138 @@ import org.slf4j.LoggerFactory;
  */
 public class AddDirEntryCertExecution extends ExecutionBase {
 
-  private CertificateAdministrationApi certificateAdministrationApi;
-  private Logger LOG = LoggerFactory.getLogger(AddDirEntryExecution.class);
+    private CertificateAdministrationApi certificateAdministrationApi;
+    private Logger LOG = LoggerFactory.getLogger(CertificateAdministrationApi.class);
 
-  public AddDirEntryCertExecution(GemApiClient api) {
-    super(api, CommandNamesEnum.ADD_DIR_CERT);
-    certificateAdministrationApi = new GemCertificateAdministrationApi(apiClient);
-  }
+    public AddDirEntryCertExecution(GemApiClient api) {
+        super(api, CommandNamesEnum.ADD_DIR_CERT);
+        certificateAdministrationApi = new GemCertificateAdministrationApi(apiClient);
+    }
 
-  @Override
-  public boolean checkValidation(CommandType command) {
-    if (command.getUserCertificate() == null) {
-      return false;
-    }
-    if (StringUtils.isBlank(command.getUserCertificate().getUserCertificate())) {
-      return false;
-    }
-    String uid = null;
-    if (command.getDn() != null) {
-      uid = command.getDn().getUid();
-    }
-    if (StringUtils.isBlank(uid)) {
-      DistinguishedNameType certDn = command.getUserCertificate().getDn();
-      if (certDn != null) {
-        uid = certDn.getUid();
-      }
-    }
-    if (StringUtils.isBlank(uid)) {
-      return false;
-    }
-    return true;
-  }
+    @Override
+    public boolean checkValidation(CommandType command) {
+        if (command.getUserCertificate() == null) {
+            LOG.error("No certificate element found");
+            return false;
+        }
+        if (command.getUserCertificate().isEmpty()) {
+            LOG.error("No certificate delivered");
+            return false;
+        }
+        String uid= null;
+        for (UserCertificateType cert : command.getUserCertificate()) {
+            String uidDn = null;
+            if (command.getDn() != null) {
+                uidDn = command.getDn().getUid();
+            }
+            if (StringUtils.isBlank(uidDn)) {
+                DistinguishedNameType certDn = cert.getDn();
+                if (certDn != null) {
+                    uid = certDn.getUid();
+                }
+            }
+            if(StringUtils.isBlank(uid)){
+                uid = uidDn;
+            }
 
-  @Override
-  public boolean executeCommands() {
-    boolean runSuccessful = true;
-    if (commands.size() == 0) {
-      return true;
+            if (StringUtils.isBlank(uid)) {
+                LOG.error("No uid delivered");
+                return false;
+            }
+             if(!StringUtils.isNotBlank(uid) && !StringUtils.isNotBlank(uidDn) && !uid.equals(uidDn)) {
+                 LOG.error("Mismatching uid delivered");
+                 return false;
+                }
+            }
+        return true;
     }
-    for (CommandType command : commands) {
-      if (isEntryPresent(command)) {
+
+    @Override
+    public boolean executeCommands() {
+        boolean runSuccessful = true;
+        for (CommandType command : commands) {
+            LOG.debug("--- Command  " + command.getCommandId() + " ---");
+            if (isEntryPresent(command)) {
+                try {
+                    executeCommand(command);
+                } catch (Exception ex) {
+                    LOG.error("An error have occured: " + ex.getMessage());
+                    runSuccessful = false;
+                }
+            } else {
+                LOG.error("Entry for this Certificate could not be found: "
+                    + Transformer.getCreateDirectoryEntry(command));
+                runSuccessful = false;
+            }
+            LOG.debug("--- Command  " + command.getCommandId() + " end ---");
+        }
+        return runSuccessful;
+    }
+
+    private ApiResponse<DistinguishedName> executeCommand(CommandType command) {
+        apiClient.validateToken();
+
+        boolean runSuccessful = true;
+        CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
+
+        ApiResponse<DistinguishedName> response = null;
+        for (UserCertificate userCertificate : createDirectoryEntry.getUserCertificates()) {
+            try {
+                String uid = getUid(createDirectoryEntry.getDirectoryEntryBase(), userCertificate);
+                response = addSingleCertificate(uid, userCertificate);
+                if (response.getStatusCode() == HttpStatus.SC_CREATED) {
+                    LOG.debug(
+                        "Certificate successful added: \n" + userCertificate);
+                }
+            } catch (ApiException e) {
+                runSuccessful = false;
+                LOG.error(
+                    "Something went wrong will adding certificate. Responsecode: " + e.getCode()
+                        + " certificate: " + userCertificate.getUserCertificate());
+            }
+        }
+        if (!runSuccessful) {
+            throw new CommandException(
+                "At least one certificate could not be added in:" + "\n" + Transformer
+                    .getCreateDirectoryEntry(command));
+        }
+
+        return response;
+    }
+
+    private String getUid(BaseDirectoryEntry directoryEntryBase, UserCertificate userCertificate) {
+        // uid present because checked in validation
+        String uidCert = null;
+        String uidEntry = null;
+
+        if (userCertificate.getDn() != null) {
+            uidCert = userCertificate.getDn().getUid();
+        }
+
+        if (directoryEntryBase != null) {
+            DistinguishedName dn = directoryEntryBase.getDn();
+            if (dn != null) {
+                uidEntry = dn.getUid();
+            }
+        }
+        return uidCert == null ? uidEntry : uidCert;
+    }
+
+    private ApiResponse<DistinguishedName> addSingleCertificate(String uid,
+        UserCertificate userCertificate) throws ApiException {
+        return certificateAdministrationApi
+            .addDirectoryEntryCertificateWithHttpInfo(uid, userCertificate);
+    }
+
+    @Override
+    public boolean postCheck() {
         try {
-          executeCommand(command);
+            super.postCheck();
+            return true;
         } catch (Exception ex) {
-          LOG.error("An error have occured: " + ex.getMessage());
-          runSuccessful = false;
+            LOG.error(ex.getMessage());
         }
-      } else {
-        runSuccessful = doModify(command);
-      }
+
+        return false;
     }
-    return runSuccessful;
-  }
-
-  private ApiResponse<DistinguishedName> executeCommand(CommandType command) {
-    apiClient.validateToken();
-    boolean runSucsessfull = true;
-    CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
-
-    ApiResponse<DistinguishedName> response = null;
-    for (UserCertificate userCertificate : createDirectoryEntry.getUserCertificates()) {
-      try {
-        String uid = getUid(createDirectoryEntry.getDirectoryEntryBase(), userCertificate);
-        response = addSingleCertificate(uid, userCertificate);
-        if (response.getStatusCode() == 201) {
-          LOG.debug(
-              "Certificate successful added: \n" + userCertificate);
-        }
-      } catch (ApiException e) {
-        runSucsessfull = false;
-        LOG.error(
-            "Something went wrong will adding certificate. Responsecode: " + e.getCode()
-                + " certificate: " + userCertificate
-                .getUserCertificate());
-      }
-    }
-    if (!runSucsessfull) {
-      throw new CommandException(
-          "At least one certificate could not be added in:" + "\n" + Transformer
-              .getCreateDirectoryEntry(command));
-    }
-
-    return response;
-  }
-
-  private String getUid(BaseDirectoryEntry directoryEntryBase, UserCertificate userCertificate) {
-    // uid present because checked in validation
-    String uidCert = null;
-    String uidEntry = null;
-
-    if (userCertificate.getDn() != null) {
-      uidCert = userCertificate.getDn().getUid();
-    }
-
-    if (directoryEntryBase != null) {
-      DistinguishedName dn = directoryEntryBase.getDn();
-      if (dn != null) {
-        uidEntry = dn.getUid();
-      }
-    }
-    return uidCert == null ? uidEntry : uidCert;
-  }
-
-  private ApiResponse<DistinguishedName> addSingleCertificate(String uid,
-      UserCertificate userCertificate) throws ApiException {
-    return certificateAdministrationApi
-        .addDirectoryEntryCertificateWithHttpInfo(uid, userCertificate);
-  }
-
-  private boolean doModify(CommandType command) {
-    LOG.debug(
-        "Certificate is already present in VZD. Will Proceed with modify certificate entry command");
-    try {
-      ExecutionCollection.getInstance().getModifyDirEntryCertExecution()
-          .executeCommand(command);
-      return true;
-    } catch (Exception ex) {
-      LOG.error(
-          "Modify certificate entry execution failed. " + ex.getMessage() + "\n" + Transformer
-              .getBaseDirectoryEntryFromCommandType(command));
-      return false;
-    }
-  }
-
-  @Override
-  public boolean postCheck() {
-    try {
-      super.postCheck();
-      return true;
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-
-    return false;
-  }
 }

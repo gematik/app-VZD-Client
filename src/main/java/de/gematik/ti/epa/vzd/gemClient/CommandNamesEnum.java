@@ -18,31 +18,31 @@ package de.gematik.ti.epa.vzd.gemClient;
 
 public enum CommandNamesEnum {
 
-  ADD_DIR_ENTRY("addDirectoryEntries"),
-  READ_DIR_ENTRY("readDirectoryEntries"),
-  MOD_DIR_ENTRY("modifyDirectoryEntries"),
-  DEL_DIR_ENTRY("deleteDirectoryEntries"),
-  ADD_DIR_CERT("addDirectoryEntryCertificate"),
-  READ_DIR_CERT("readDirectoryEntryCertificate"),
-  MOD_DIR_CERT("modifyDirectoryEntryCertificate"),
-  DEL_DIR_CERT("deleteDirectoryEntryCertificate");
+    ADD_DIR_ENTRY("addDirectoryEntries"),
+    READ_DIR_ENTRY("readDirectoryEntries"),
+    MOD_DIR_ENTRY("modifyDirectoryEntries"),
+    DEL_DIR_ENTRY("deleteDirectoryEntries"),
+    ADD_DIR_CERT("addDirectoryEntryCertificate"),
+    READ_DIR_CERT("readDirectoryEntryCertificate"),
+    MOD_DIR_CERT("modifyDirectoryEntryCertificate"),
+    DEL_DIR_CERT("deleteDirectoryEntryCertificate");
 
-  private final String name;
+    private final String name;
 
-  CommandNamesEnum(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public static CommandNamesEnum getEntry(String name) {
-    for (CommandNamesEnum cn : CommandNamesEnum.values()) {
-      if (name.equals(cn.getName())) {
-        return cn;
-      }
+    CommandNamesEnum(String name) {
+        this.name = name;
     }
-    return null;
-  }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public static CommandNamesEnum getEntry(String name) {
+        for (CommandNamesEnum cn : CommandNamesEnum.values()) {
+            if (name.equals(cn.getName())) {
+                return cn;
+            }
+        }
+        return null;
+    }
 }

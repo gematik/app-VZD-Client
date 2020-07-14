@@ -29,10 +29,19 @@
 
 package de.gematik.ti.epa.vzd.client.model;
 
-import com.google.gson.annotations.SerializedName;
-import io.swagger.annotations.ApiModelProperty;
-import java.util.List;
 import java.util.Objects;
+import java.util.Arrays;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import de.gematik.ti.epa.vzd.client.model.DistinguishedName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * FAD1
@@ -40,89 +49,89 @@ import java.util.Objects;
 
 public class FAD1 {
 
-  public static final String SERIALIZED_NAME_DN = "dn";
-  @SerializedName(SERIALIZED_NAME_DN)
-  private DistinguishedName dn;
+    public static final String SERIALIZED_NAME_DN = "dn";
+    @SerializedName(SERIALIZED_NAME_DN)
+    private DistinguishedName dn;
 
-  public static final String SERIALIZED_NAME_MAIL = "mail";
-  @SerializedName(SERIALIZED_NAME_MAIL)
-  private List<String> mail = null;
-
-
-  public FAD1 dn(DistinguishedName dn) {
-
-    this.dn = dn;
-    return this;
-  }
-
-  /**
-   * Get dn
-   *
-   * @return dn
-   **/
-  @ApiModelProperty(required = true, value = "")
-
-  public DistinguishedName getDn() {
-    return dn;
-  }
+    public static final String SERIALIZED_NAME_MAIL = "mail";
+    @SerializedName(SERIALIZED_NAME_MAIL)
+    private List<String> mail = null;
 
 
-  public void setDn(DistinguishedName dn) {
-    this.dn = dn;
-  }
+    public FAD1 dn(DistinguishedName dn) {
 
-
-  /**
-   * Get mail
-   *
-   * @return mail
-   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-
-  public List<String> getMail() {
-    return mail;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+        this.dn = dn;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get dn
+     *
+     * @return dn
+     **/
+    @ApiModelProperty(required = true, value = "")
+
+    public DistinguishedName getDn() {
+        return dn;
     }
-    FAD1 FAD1 = (FAD1) o;
-    return Objects.equals(this.dn, FAD1.dn) &&
-        Objects.equals(this.mail, FAD1.mail);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(dn, mail);
-  }
 
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class FAD1 {\n");
-    sb.append("    dn: ").append(toIndentedString(dn)).append("\n");
-    sb.append("    mail: ").append(toIndentedString(mail)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    public void setDn(DistinguishedName dn) {
+        this.dn = dn;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+
+    /**
+     * Get mail
+     *
+     * @return mail
+     **/
+    @javax.annotation.Nullable
+    @ApiModelProperty(value = "")
+
+    public List<String> getMail() {
+        return mail;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FAD1 FAD1 = (FAD1) o;
+        return Objects.equals(this.dn, FAD1.dn) &&
+            Objects.equals(this.mail, FAD1.mail);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dn, mail);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class FAD1 {\n");
+        sb.append("    dn: ").append(toIndentedString(dn)).append("\n");
+        sb.append("    mail: ").append(toIndentedString(mail)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

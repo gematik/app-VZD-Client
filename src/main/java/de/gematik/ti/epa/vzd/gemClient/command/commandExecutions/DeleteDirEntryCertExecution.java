@@ -29,7 +29,9 @@ import de.gematik.ti.epa.vzd.gemClient.command.Transformer;
 import de.gematik.ti.epa.vzd.gemClient.exceptions.CommandException;
 import de.gematik.ti.epa.vzd.gemClient.invoker.GemApiClient;
 import generated.CommandType;
+import generated.UserCertificateType;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,114 +40,119 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteDirEntryCertExecution extends ExecutionBase {
 
-  private CertificateAdministrationApi certificateAdministrationApi;
-  private Logger LOG = LoggerFactory.getLogger(AddDirEntryExecution.class);
+    private CertificateAdministrationApi certificateAdministrationApi;
+    private Logger LOG = LoggerFactory.getLogger(DeleteDirEntryCertExecution.class);
 
 
-  public DeleteDirEntryCertExecution(GemApiClient api) {
-    super(api, CommandNamesEnum.DEL_DIR_CERT);
-    certificateAdministrationApi = new GemCertificateAdministrationApi(apiClient);
-  }
-
-  @Override
-  public boolean checkValidation(CommandType command) {
-    String uid = null;
-    String cn = null;
-    if (command.getUserCertificate() != null) {
-      if (command.getUserCertificate().getDn() != null) {
-        uid = command.getUserCertificate().getDn().getUid();
-        cn = command.getUserCertificate().getDn().getCn();
-      }
+    public DeleteDirEntryCertExecution(GemApiClient api) {
+        super(api, CommandNamesEnum.DEL_DIR_CERT);
+        certificateAdministrationApi = new GemCertificateAdministrationApi(apiClient);
     }
-    if (StringUtils.isBlank(uid)) {
-      if (command.getDomainID() != null) {
-        uid = command.getDn().getUid();
-      }
-    }
-    if (StringUtils.isBlank(uid) || StringUtils.isBlank(cn)) {
-      return false;
-    }
-    return true;
-  }
 
-  @Override
-  public boolean executeCommands() {
-    boolean runSuccessful = true;
-    if (commands.size() == 0) {
-      return true;
-    }
-    for (CommandType command : commands) {
-      System.out.println(
-          "Warning isEntryPresent abgeschlatet <- executeCommands " + this.getClass());
-      try {
-        executeCommand(command);
-      } catch (Exception ex) {
-        LOG.error("An error have occured: " + ex.getMessage());
-        runSuccessful = false;
-      }
-    }
-    return runSuccessful;
-  }
-
-  private void executeCommand(CommandType command) {
-    apiClient.validateToken();
-    boolean runSucsessfull = true;
-    CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
-
-    ApiResponse<Void> response;
-    for (UserCertificate userCertificate : createDirectoryEntry.getUserCertificates()) {
-      //todo check if present mit einfügen
-      try {
-        String uid = getUid(createDirectoryEntry.getDirectoryEntryBase(), userCertificate);
-        String cn = command.getUserCertificate().getDn().getCn();
-        response = deleteSingleCertificate(uid, cn);
-        if (response.getStatusCode() == 200) {
-          LOG.debug(
-              "Certificate successful deleted: \n" + userCertificate);
+    @Override
+    public boolean checkValidation(CommandType command) {
+        String uid = null;
+        String cn = null;
+        boolean check = true;
+        String totalUid = null;
+        for (UserCertificateType userCertificateType : command.getUserCertificate()) {
+            if (userCertificateType.getDn() != null) {
+                if (totalUid == null) {
+                    totalUid = userCertificateType.getDn().getUid();
+                }
+                uid = userCertificateType.getDn().getUid();
+                cn = userCertificateType.getDn().getCn();
+            }
+            if (StringUtils.isBlank(uid)) {
+                uid = command.getDn().getUid();
+            }
+            if (StringUtils.isBlank(uid) || StringUtils.isBlank(cn) || !totalUid.equals(uid)) {
+                check = false;
+            }
         }
-      } catch (ApiException e) {
-        runSucsessfull = false;
-        LOG.error(
-            "Something went wrong will adding certificate. Responsecode: " + e.getCode()
-                + " certificate: " + userCertificate
-                .getUserCertificate());
-      }
-    }
-    if (!runSucsessfull) {
-      throw new CommandException(
-          "At least one certificate could not be added in:" + "\n" + Transformer
-              .getCreateDirectoryEntry(command));
-    }
-  }
-
-  private String getUid(BaseDirectoryEntry directoryEntryBase, UserCertificate userCertificate) {
-    String uidCert = userCertificate.getDn().getUid();
-    String uidEntry = null;
-
-    if (directoryEntryBase != null) {
-      DistinguishedName dn = directoryEntryBase.getDn();
-      if (dn != null) {
-        uidEntry = dn.getUid();
-      }
-    }
-    return uidCert == null ? uidEntry : uidCert;
-  }
-
-  private ApiResponse<Void> deleteSingleCertificate(String uid, String certificateEntryId)
-      throws ApiException {
-    return certificateAdministrationApi
-        .deleteDirectoryEntryCertificateWithHttpInfo(uid, certificateEntryId);
-  }
-
-  @Override
-  public boolean postCheck() {
-    try {
-      super.postCheck();
-      return true;
-    } catch (Exception ex) {
-      ex.printStackTrace();
+        return check;
     }
 
-    return false;
-  }
+    @Override
+    public boolean executeCommands() {
+        boolean runSuccessful = true;
+        if (commands.isEmpty()) {
+            return true;
+        }
+        for (CommandType command : commands) {
+            LOG.debug("--- Command  " + command.getCommandId() + " ---");
+            if (searchByUserCertificate(command)) {
+                try {
+                    executeCommand(command);
+                } catch (Exception ex) {
+                    LOG.error("An error have occured: " + ex.getMessage());
+                    runSuccessful = false;
+                }
+            }
+            LOG.debug("--- Command  " + command.getCommandId() + " end ---");
+        }
+        return runSuccessful;
+    }
+
+    private void executeCommand(CommandType command) {
+        apiClient.validateToken();
+
+        boolean runSucsessfull = true;
+        CreateDirectoryEntry createDirectoryEntry = Transformer.getCreateDirectoryEntry(command);
+
+        ApiResponse<Void> response;
+        for (UserCertificate userCertificate : createDirectoryEntry.getUserCertificates()) {
+            try {
+                String uid = getUid(createDirectoryEntry.getDirectoryEntryBase(), userCertificate);
+                String cn = userCertificate.getDn().getCn();
+                response = deleteSingleCertificate(uid, cn);
+                if (response.getStatusCode() == HttpStatus.SC_OK) {
+                    LOG.debug(
+                        "Certificate successful deleted: \n" + userCertificate);
+                }
+            } catch (ApiException e) {
+                runSucsessfull = false;
+                LOG.error(
+                    "Something went wrong will deleting certificate. Responsecode: " + e.getCode()
+                        + " certificate: " + userCertificate
+                        .getUserCertificate());
+            }
+        }
+        if (!runSucsessfull) {
+            throw new CommandException(
+                "At least one certificate could not be added in:" + "\n" + Transformer
+                    .getCreateDirectoryEntry(command));
+        }
+    }
+
+    private String getUid(BaseDirectoryEntry directoryEntryBase, UserCertificate userCertificate) {
+        String uidCert = userCertificate.getDn().getUid();
+        String uidEntry = null;
+
+        if (directoryEntryBase != null) {
+            DistinguishedName dn = directoryEntryBase.getDn();
+            if (dn != null) {
+                uidEntry = dn.getUid();
+            }
+        }
+        return uidCert == null ? uidEntry : uidCert;
+    }
+
+    private ApiResponse<Void> deleteSingleCertificate(String uid, String certificateEntryId)
+        throws ApiException {
+        return certificateAdministrationApi
+            .deleteDirectoryEntryCertificateWithHttpInfo(uid, certificateEntryId);
+    }
+
+    @Override
+    public boolean postCheck() {
+        try {
+            super.postCheck();
+            return true;
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+        }
+
+        return false;
+    }
 }

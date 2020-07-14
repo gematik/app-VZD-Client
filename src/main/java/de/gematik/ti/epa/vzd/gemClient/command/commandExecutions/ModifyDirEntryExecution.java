@@ -28,6 +28,7 @@ import de.gematik.ti.epa.vzd.gemClient.exceptions.CommandException;
 import de.gematik.ti.epa.vzd.gemClient.invoker.GemApiClient;
 import generated.CommandType;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,103 +37,101 @@ import org.slf4j.LoggerFactory;
  */
 public class ModifyDirEntryExecution extends ExecutionBase {
 
-  private Logger LOG = LoggerFactory.getLogger(ModifyDirEntryExecution.class);
-  private final DirectoryEntryAdministrationApi directoryEntryAdministrationApi;
+    private Logger LOG = LoggerFactory.getLogger(ModifyDirEntryExecution.class);
+    private final DirectoryEntryAdministrationApi directoryEntryAdministrationApi;
 
-  public ModifyDirEntryExecution(GemApiClient api) {
-    super(api, CommandNamesEnum.MOD_DIR_ENTRY);
-    directoryEntryAdministrationApi = new GemDirectoryEntryAdministrationApi(apiClient);
-  }
+    public ModifyDirEntryExecution(GemApiClient api) {
+        super(api, CommandNamesEnum.MOD_DIR_ENTRY);
+        directoryEntryAdministrationApi = new GemDirectoryEntryAdministrationApi(apiClient);
+    }
 
-  @Override
-  public boolean checkValidation(CommandType command) {
-    boolean check = true;
-    if (command.getDn() != null) {
-      if (StringUtils.isBlank(command.getDn().getUid())) {
-        LOG.error(
-            "Missing argument -> uid for command " + command.getName() + "\n" + Transformer
+    @Override
+    public boolean checkValidation(CommandType command) {
+        boolean check = true;
+        if (command.getDn() != null) {
+            if (StringUtils.isBlank(command.getDn().getUid())) {
+                LOG.error(
+                    "Missing argument -> uid for command " + command.getName() + "\n" + Transformer
+                        .getBaseDirectoryEntryFromCommandType(command));
+                check = false;
+            }
+        } else {
+            LOG.error("Missing element \"dn\" " + command.getName() + "\n" + Transformer
                 .getBaseDirectoryEntryFromCommandType(command));
-        check = false;
-      }
-    } else {
-      LOG.error("Missing element \"dn\" " + command.getName() + "\n" + Transformer
-          .getBaseDirectoryEntryFromCommandType(command));
-      check = false;
-    }
-    return check;
-  }
-
-  @Override
-  public boolean executeCommands() {
-    boolean runSuccessful = true;
-    if (commands.size() == 0) {
-      return true;
-    }
-    for (CommandType command : commands) {
-      if (isEntryPresent(command)) {
-        try {
-          executeCommand(command);
-        } catch (Exception ex) {
-          LOG.error("An error have occured: " + ex.getMessage());
-          runSuccessful = false;
+            check = false;
         }
-      } else {
-        runSuccessful = doAdd(command);
-      }
-    }
-    return runSuccessful;
-  }
-
-  /**
-   * Function that execute one command and logs the result
-   *
-   * @param command
-   * @return
-   * @throws ApiException
-   */
-  protected ApiResponse<DistinguishedName> executeCommand(CommandType command)
-      throws ApiException {
-    apiClient.validateToken();
-    BaseDirectoryEntry baseDirectoryEntry = Transformer
-        .getBaseDirectoryEntryFromCommandType(command);
-    ApiResponse<DistinguishedName> response = directoryEntryAdministrationApi
-        .modifyDirectoryEntryWithHttpInfo(command.getDn().getUid(), baseDirectoryEntry);
-    if (response.getStatusCode() == 200) {
-      LOG.debug(
-          "Modify directory entry execution successful operated\n" + response.getData());
-    } else {
-      throw new CommandException(
-          "Modify directory entry execution failed. Response-Status was: " + response
-              .getStatusCode() + "\n" + Transformer
-              .getBaseDirectoryEntryFromCommandType(command));
-    }
-    return response;
-  }
-
-  private boolean doAdd(CommandType command) {
-    LOG.info("Ended here!");
-    return true;
-//        LOG.debug("Entry not present at VZD. Will proceed with add directory entry command");
-//        try {
-//            ExecutionCollection.getInstance().getAddDirEntryExecution().executeCommand(command);
-//            return true;
-//        } catch (ApiException ex) {
-//            LOG.error("Add directory entry execution failed\n" + Transformer
-//                .getCreateDirectoryEntry(command));
-//            return false;
-//        }
-
-  }
-
-  @Override
-  public boolean postCheck() {
-    try {
-      super.postCheck();
-      return true;
-    } catch (Exception ex) {
-      ex.printStackTrace();
+        return check;
     }
 
-    return false;
-  }
+    @Override
+    public boolean executeCommands() {
+        boolean runSuccessful = true;
+        for (CommandType command : commands) {
+            LOG.debug("--- Command  " + command.getCommandId() + " ---");
+            if (isEntryPresent(command)) {
+                try {
+                    executeCommand(command);
+                } catch (Exception ex) {
+                    LOG.error("An error have occured: " + ex.getMessage());
+                    runSuccessful = false;
+                }
+            } else {
+                runSuccessful = doAdd(command);
+            }
+            LOG.debug("--- Command  " + command.getCommandId() + " end ---");
+        }
+        return runSuccessful;
+    }
+
+    /**
+     * Function that execute one command and logs the result
+     *
+     * @param command
+     * @return
+     * @throws ApiException
+     */
+    protected ApiResponse<DistinguishedName> executeCommand(CommandType command)
+        throws ApiException {
+        apiClient.validateToken();
+
+        BaseDirectoryEntry baseDirectoryEntry = Transformer
+            .getBaseDirectoryEntryFromCommandType(command);
+        ApiResponse<DistinguishedName> response = directoryEntryAdministrationApi
+            .modifyDirectoryEntryWithHttpInfo(command.getDn().getUid(), baseDirectoryEntry);
+        if (response.getStatusCode() == HttpStatus.SC_OK) {
+            LOG.debug(
+                "Modify directory entry execution successful operated\n" + response.getData());
+        } else {
+            throw new CommandException(
+                "Modify directory entry execution failed. Response status was: "
+                    + response.getStatusCode() + "\n"
+                    + Transformer.getBaseDirectoryEntryFromCommandType(command));
+        }
+        return response;
+    }
+
+    private boolean doAdd(CommandType command) {
+        LOG.debug("Entry not present at VZD. Will proceed with add directory entry command");
+        try {
+            ExecutionCollection.getInstance().getAddDirEntryExecution().executeCommand(command);
+            return true;
+        } catch (ApiException ex) {
+            LOG.error("Add directory entry execution failed\n" + Transformer
+                .getCreateDirectoryEntry(command));
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean postCheck() {
+        try {
+            super.postCheck();
+            return true;
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+        }
+
+        return false;
+    }
 }

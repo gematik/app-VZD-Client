@@ -29,11 +29,21 @@
 
 package de.gematik.ti.epa.vzd.client.model;
 
+import java.util.Objects;
+import java.util.Arrays;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import de.gematik.ti.epa.vzd.client.model.BaseDirectoryEntry;
+import de.gematik.ti.epa.vzd.client.model.Fachdaten;
+import de.gematik.ti.epa.vzd.client.model.UserCertificate;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * DirectoryEntry
@@ -41,147 +51,147 @@ import java.util.Objects;
 
 public class DirectoryEntry {
 
-  public static final String SERIALIZED_NAME_DIRECTORY_ENTRY_BASE = "DirectoryEntryBase";
-  @SerializedName(SERIALIZED_NAME_DIRECTORY_ENTRY_BASE)
-  private BaseDirectoryEntry directoryEntryBase;
+    public static final String SERIALIZED_NAME_DIRECTORY_ENTRY_BASE = "DirectoryEntryBase";
+    @SerializedName(SERIALIZED_NAME_DIRECTORY_ENTRY_BASE)
+    private BaseDirectoryEntry directoryEntryBase;
 
-  public static final String SERIALIZED_NAME_USER_CERTIFICATES = "userCertificates";
-  @SerializedName(SERIALIZED_NAME_USER_CERTIFICATES)
-  private List<UserCertificate> userCertificates = null;
+    public static final String SERIALIZED_NAME_USER_CERTIFICATES = "userCertificates";
+    @SerializedName(SERIALIZED_NAME_USER_CERTIFICATES)
+    private List<UserCertificate> userCertificates = null;
 
-  public static final String SERIALIZED_NAME_FACHDATEN = "Fachdaten";
-  @SerializedName(SERIALIZED_NAME_FACHDATEN)
-  private List<Fachdaten> fachdaten = null;
-
-
-  public DirectoryEntry directoryEntryBase(BaseDirectoryEntry directoryEntryBase) {
-
-    this.directoryEntryBase = directoryEntryBase;
-    return this;
-  }
-
-  /**
-   * Get directoryEntryBase
-   *
-   * @return directoryEntryBase
-   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-
-  public BaseDirectoryEntry getDirectoryEntryBase() {
-    return directoryEntryBase;
-  }
+    public static final String SERIALIZED_NAME_FACHDATEN = "Fachdaten";
+    @SerializedName(SERIALIZED_NAME_FACHDATEN)
+    private List<Fachdaten> fachdaten = null;
 
 
-  public void setDirectoryEntryBase(BaseDirectoryEntry directoryEntryBase) {
-    this.directoryEntryBase = directoryEntryBase;
-  }
+    public DirectoryEntry directoryEntryBase(BaseDirectoryEntry directoryEntryBase) {
 
-
-  public DirectoryEntry userCertificates(List<UserCertificate> userCertificates) {
-
-    this.userCertificates = userCertificates;
-    return this;
-  }
-
-  public DirectoryEntry addUserCertificatesItem(UserCertificate userCertificatesItem) {
-    if (this.userCertificates == null) {
-      this.userCertificates = new ArrayList<>();
+        this.directoryEntryBase = directoryEntryBase;
+        return this;
     }
-    this.userCertificates.add(userCertificatesItem);
-    return this;
-  }
 
-  /**
-   * Get userCertificates
-   *
-   * @return userCertificates
-   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+    /**
+     * Get directoryEntryBase
+     *
+     * @return directoryEntryBase
+     **/
+    @javax.annotation.Nullable
+    @ApiModelProperty(value = "")
 
-  public List<UserCertificate> getUserCertificates() {
-    return userCertificates;
-  }
-
-
-  public void setUserCertificates(List<UserCertificate> userCertificates) {
-    this.userCertificates = userCertificates;
-  }
-
-
-  public DirectoryEntry fachdaten(List<Fachdaten> fachdaten) {
-
-    this.fachdaten = fachdaten;
-    return this;
-  }
-
-  public DirectoryEntry addFachdatenItem(Fachdaten fachdatenItem) {
-    if (this.fachdaten == null) {
-      this.fachdaten = new ArrayList<>();
+    public BaseDirectoryEntry getDirectoryEntryBase() {
+        return directoryEntryBase;
     }
-    this.fachdaten.add(fachdatenItem);
-    return this;
-  }
-
-  /**
-   * Get fachdaten
-   *
-   * @return fachdaten
-   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-
-  public List<Fachdaten> getFachdaten() {
-    return fachdaten;
-  }
 
 
-  public void setFachdaten(List<Fachdaten> fachdaten) {
-    this.fachdaten = fachdaten;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+    public void setDirectoryEntryBase(BaseDirectoryEntry directoryEntryBase) {
+        this.directoryEntryBase = directoryEntryBase;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+
+    public DirectoryEntry userCertificates(List<UserCertificate> userCertificates) {
+
+        this.userCertificates = userCertificates;
+        return this;
     }
-    DirectoryEntry directoryEntry = (DirectoryEntry) o;
-    return Objects.equals(this.directoryEntryBase, directoryEntry.directoryEntryBase) &&
-        Objects.equals(this.userCertificates, directoryEntry.userCertificates) &&
-        Objects.equals(this.fachdaten, directoryEntry.fachdaten);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(directoryEntryBase, userCertificates, fachdaten);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class DirectoryEntry {\n");
-    sb.append("    directoryEntryBase: ").append(toIndentedString(directoryEntryBase)).append("\n");
-    sb.append("    userCertificates: ").append(toIndentedString(userCertificates)).append("\n");
-    sb.append("    fachdaten: ").append(toIndentedString(fachdaten)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    public DirectoryEntry addUserCertificatesItem(UserCertificate userCertificatesItem) {
+        if (this.userCertificates == null) {
+            this.userCertificates = new ArrayList<>();
+        }
+        this.userCertificates.add(userCertificatesItem);
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    /**
+     * Get userCertificates
+     *
+     * @return userCertificates
+     **/
+    @javax.annotation.Nullable
+    @ApiModelProperty(value = "")
+
+    public List<UserCertificate> getUserCertificates() {
+        return userCertificates;
+    }
+
+
+    public void setUserCertificates(List<UserCertificate> userCertificates) {
+        this.userCertificates = userCertificates;
+    }
+
+
+    public DirectoryEntry fachdaten(List<Fachdaten> fachdaten) {
+
+        this.fachdaten = fachdaten;
+        return this;
+    }
+
+    public DirectoryEntry addFachdatenItem(Fachdaten fachdatenItem) {
+        if (this.fachdaten == null) {
+            this.fachdaten = new ArrayList<>();
+        }
+        this.fachdaten.add(fachdatenItem);
+        return this;
+    }
+
+    /**
+     * Get fachdaten
+     *
+     * @return fachdaten
+     **/
+    @javax.annotation.Nullable
+    @ApiModelProperty(value = "")
+
+    public List<Fachdaten> getFachdaten() {
+        return fachdaten;
+    }
+
+
+    public void setFachdaten(List<Fachdaten> fachdaten) {
+        this.fachdaten = fachdaten;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DirectoryEntry directoryEntry = (DirectoryEntry) o;
+        return Objects.equals(this.directoryEntryBase, directoryEntry.directoryEntryBase) &&
+            Objects.equals(this.userCertificates, directoryEntry.userCertificates) &&
+            Objects.equals(this.fachdaten, directoryEntry.fachdaten);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(directoryEntryBase, userCertificates, fachdaten);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class DirectoryEntry {\n");
+        sb.append("    directoryEntryBase: ").append(toIndentedString(directoryEntryBase)).append("\n");
+        sb.append("    userCertificates: ").append(toIndentedString(userCertificates)).append("\n");
+        sb.append("    fachdaten: ").append(toIndentedString(fachdaten)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 
