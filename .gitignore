@@ -26,3 +26,6 @@ generated/jaxb/*
 #testData#
 .bsp*Command.xml
 .idea/
+
+#Incluede TestServer#
+!src/test/resources/exec/Testserver.jar

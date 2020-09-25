@@ -59,6 +59,23 @@
 		<domainID>domainID</domainID>
 	</Command>
 	<Command>
+		<name>safeModifyDirectoryEntries</name>
+		<dn>
+			<uid>uid</uid>
+		</dn>
+		<cn>cn</cn>
+		<displayName>displayName</displayName>
+		<streetAddress>streetAddress</streetAddress>
+		<postalCode>postalCode</postalCode>
+		<localityName>localityName</localityName>
+		<stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
+		<title>title</title>
+		<organization>organization</organization>
+		<otherName>otherName</otherName>
+		<specialization>specialization</specialization>
+		<domainID>domainID</domainID>
+	</Command>
+	<Command>
 		<name>deleteDirectoryEntries</name>
 		<dn>
 			<uid>uid</uid>

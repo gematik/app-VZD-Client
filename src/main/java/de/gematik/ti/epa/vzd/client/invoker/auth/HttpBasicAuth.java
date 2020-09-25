@@ -30,13 +30,9 @@
 package de.gematik.ti.epa.vzd.client.invoker.auth;
 
 import de.gematik.ti.epa.vzd.client.invoker.Pair;
-
-import okhttp3.Credentials;
-
-import java.util.Map;
 import java.util.List;
-
-import java.io.UnsupportedEncodingException;
+import java.util.Map;
+import okhttp3.Credentials;
 
 public class HttpBasicAuth implements Authentication {
 

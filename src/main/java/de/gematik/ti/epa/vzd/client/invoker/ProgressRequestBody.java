@@ -29,11 +29,9 @@
 
 package de.gematik.ti.epa.vzd.client.invoker;
 
+import java.io.IOException;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-
-import java.io.IOException;
-
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;

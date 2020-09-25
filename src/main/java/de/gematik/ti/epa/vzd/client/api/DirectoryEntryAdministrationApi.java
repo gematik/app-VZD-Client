@@ -29,26 +29,17 @@
 
 package de.gematik.ti.epa.vzd.client.api;
 
+import com.google.gson.reflect.TypeToken;
 import de.gematik.ti.epa.vzd.client.invoker.ApiCallback;
 import de.gematik.ti.epa.vzd.client.invoker.ApiClient;
 import de.gematik.ti.epa.vzd.client.invoker.ApiException;
 import de.gematik.ti.epa.vzd.client.invoker.ApiResponse;
 import de.gematik.ti.epa.vzd.client.invoker.Configuration;
 import de.gematik.ti.epa.vzd.client.invoker.Pair;
-import de.gematik.ti.epa.vzd.client.invoker.ProgressRequestBody;
-import de.gematik.ti.epa.vzd.client.invoker.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
 import de.gematik.ti.epa.vzd.client.model.BaseDirectoryEntry;
 import de.gematik.ti.epa.vzd.client.model.CreateDirectoryEntry;
 import de.gematik.ti.epa.vzd.client.model.DirectoryEntry;
 import de.gematik.ti.epa.vzd.client.model.DistinguishedName;
-import de.gematik.ti.epa.vzd.client.model.Error;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;

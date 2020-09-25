@@ -30,9 +30,8 @@
 package de.gematik.ti.epa.vzd.client.invoker.auth;
 
 import de.gematik.ti.epa.vzd.client.invoker.Pair;
-
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 
 public class OAuth implements Authentication {

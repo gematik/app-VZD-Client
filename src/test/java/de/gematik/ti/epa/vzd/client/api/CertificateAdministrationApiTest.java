@@ -15,15 +15,10 @@ package de.gematik.ti.epa.vzd.client.api;
 
 import de.gematik.ti.epa.vzd.client.invoker.ApiException;
 import de.gematik.ti.epa.vzd.client.model.DistinguishedName;
-import de.gematik.ti.epa.vzd.client.model.Error;
 import de.gematik.ti.epa.vzd.client.model.UserCertificate;
-import org.junit.Test;
-import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * API tests for CertificateAdministrationApi

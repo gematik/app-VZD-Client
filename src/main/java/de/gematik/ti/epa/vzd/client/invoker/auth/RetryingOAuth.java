@@ -17,12 +17,14 @@
 package de.gematik.ti.epa.vzd.client.invoker.auth;
 
 import de.gematik.ti.epa.vzd.client.invoker.Pair;
-
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.Map;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -31,11 +33,6 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.Map;
-import java.util.List;
 
 public class RetryingOAuth extends OAuth implements Interceptor {
 

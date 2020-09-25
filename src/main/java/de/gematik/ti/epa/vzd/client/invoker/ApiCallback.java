@@ -29,10 +29,8 @@
 
 package de.gematik.ti.epa.vzd.client.invoker;
 
-import java.io.IOException;
-
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Callback for asynchronous API call.

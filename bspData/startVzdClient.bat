@@ -21,4 +21,4 @@ for %%z in (%*) do (
 	if "%%z"=="-warn" set EXTRA_JVM_ARGUMENTS=-Dl4j.lvl=WARN
 )
 
-call java -jar %~dp0.\VZD-Client\VZD-Client.jar %*
+call java %EXTRA_JVM_ARGUMENTS% -jar %~dp0.\VZD-Client\VZD-Client.jar %*

@@ -15,11 +15,11 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="de.gematik.ti.epa" level="DEBUG" additivity="false">
+        <Logger name="de.gematik.ti.epa" level="TRACE" additivity="false">
             <appender-ref ref="file-log" level="DEBUG"/>
             <appender-ref ref="console-log" level="${l4j.lvl}"/>
         </Logger>
-        <Root level="DEBUG" additivity="false">
+        <Root level="TRACE" additivity="false">
             <AppenderRef ref="file-log" level="DEBUG"/>
             <AppenderRef ref="console-log" level="${l4j.lvl}"/>
         </Root>

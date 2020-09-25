@@ -55,8 +55,8 @@ dependencies {
 }
 
 jar {
-    manifest.attributes 'Main-Class': 'de.gematik.ti.epa.vzd.gemClient.Main'
-    baseName 'VZD-CLient'
+    manifest.attributes 'Main-Class': 'de.gematik.ti.epa.vzd.gem.Main'
+    baseName project.name
     from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
@@ -84,7 +84,6 @@ compileJava.dependsOn jaxb
 
 task sourceJar(type: Jar) {
     classifier "sources"
-    baseName "VZD-CLient"
     from "${project.buildDir}/../src/main/java/"
     include "**/*.java"
 }
@@ -116,7 +115,7 @@ artifacts {
 }
 
 gematikPublish {
-    name = "VZD-Client"
+    name = project.name
     description = "VZD-Client to add, remove and change data"
     gitHubProjectName = "app-VZD-Client"
 }
@@ -139,7 +138,24 @@ distributions {
                 include 'Beispiel_Config_Datei.txt'
                 include 'Beispiel_Credential_Datei.txt'
                 include 'Beispiel_Command_Datei.xml'
+                from 'src/main/resources/xsd/'
+                include 'commands.xsd'
             }
         }
+    }
+}
+
+test {
+    include '**/UnitTestsuite.class'
+    include '**/IntegrationTestsuite.class'
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/jacoco/dependency-check-report.xml")
+        csv.enabled false
     }
 }

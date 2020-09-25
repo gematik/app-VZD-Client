@@ -1,3 +1,9 @@
+# Release 1.1.0
+Neue Funktionalitäten: 
+- Proxyfunktion
+- Multithreading ready
+- SaveModify (Modify ohne Überschreiben)
+
 # Release 1.0.1
 - Funktionality for modify directory entries
  - Funktionality for add certificates entries
