@@ -61,4 +61,12 @@ public class ReadDirEntryExecutionIntegrationTest {
         assertEquals(404, exception.getCode());
     }
 
+    @Test
+    public void notExsistingTelematikIDTest() {
+        ReadDirEntryExecution readDirEntryExecution = new ReadDirEntryExecution(ConnectionPool.createConnectionPool(1));
+        ApiException exception = assertThrows(ApiException.class,
+            () -> readDirEntryExecution.executeCommand(commands.get(2), readDirEntryExecution.connectionPool.getConnection()));
+        assertEquals("No entry present for telematikID: SomeNotExistingTelematikID", exception.getMessage());
+        assertEquals(0, exception.getCode());
+    }
 }

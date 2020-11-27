@@ -14,4 +14,11 @@
             <uid>failUid</uid>
         </dn>
     </Command>
+    <Command>
+        <commandId>3</commandId>
+        <name>readDirectoryEntries</name>
+        <UserCertificate>
+            <telematikID>SomeNotExistingTelematikID</telematikID>
+        </UserCertificate>
+    </Command>
 </CommandList>

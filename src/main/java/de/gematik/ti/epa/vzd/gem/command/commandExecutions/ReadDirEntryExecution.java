@@ -36,6 +36,7 @@ import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Specific execution for Command "ReadDirectoryEntry"
  */
@@ -142,6 +143,11 @@ public class ReadDirEntryExecution extends ExecutionBase {
         String personalEntry = command.getPersonalEntry();
         String dataFromAuthority = command.getDataFromAuthority();
 
+        if (!command.getUserCertificate().isEmpty()) {
+            if (StringUtils.isBlank(uid) && StringUtils.isNotBlank(command.getUserCertificate().get(0).getTelematikID())) {
+                throw new ApiException("No entry present for telematikID: " + command.getUserCertificate().get(0).getTelematikID());
+            }
+        }
         ApiResponse<List<DirectoryEntry>> response =
             new GemDirectoryEntryAdministrationApi(apiClient).readDirectoryEntryWithHttpInfo(uid, givenName, sn, cn,
                 displayName, streetAddress, postalCode, localityName, stateOrProvinceName, title,
@@ -169,3 +175,4 @@ public class ReadDirEntryExecution extends ExecutionBase {
         return false;
     }
 }
+

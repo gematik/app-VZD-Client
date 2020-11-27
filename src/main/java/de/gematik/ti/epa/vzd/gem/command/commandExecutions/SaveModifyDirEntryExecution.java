@@ -132,7 +132,7 @@ public class SaveModifyDirEntryExecution extends ExecutionBase {
             saveCommand.setTitle(command.getTitle());
         }
         if (StringUtils.isNotBlank(command.getOrganization())) {
-            saveCommand.setOtherName(command.getOrganization());
+            saveCommand.setOrganization(command.getOrganization());
         }
         if (StringUtils.isNotBlank(command.getOtherName())) {
             saveCommand.setOtherName(command.getOtherName());

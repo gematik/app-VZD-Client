@@ -179,7 +179,7 @@ public abstract class ExecutionBase implements Callable<BaseExecutionResult> {
                 searchCommand.getUserCertificate().get(FIRST_INDEX).setTelematikID(userCertificate.getTelematikID());
                 ApiResponse<List<UserCertificate>> response = ExecutionCollection
                     .getInstance().getReadDirEntryCertExecution().executeCommand(searchCommand, apiClient);
-                return response.getStatusCode() == HttpStatus.SC_OK ? true : false;
+                return response.getStatusCode() == HttpStatus.SC_OK && response.getData().size() == 1 ? true : false;
             } catch (ApiException ex) {
                 if (ex.getCode() == 0) {
                     throw new GemClientException(
