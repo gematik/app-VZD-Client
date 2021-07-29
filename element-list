@@ -1,0 +1,14 @@
+de.gematik.ti.epa.vzd.client.api
+de.gematik.ti.epa.vzd.client.invoker
+de.gematik.ti.epa.vzd.client.invoker.auth
+de.gematik.ti.epa.vzd.client.model
+de.gematik.ti.epa.vzd.gem
+de.gematik.ti.epa.vzd.gem.api
+de.gematik.ti.epa.vzd.gem.command
+de.gematik.ti.epa.vzd.gem.command.commandExecutions
+de.gematik.ti.epa.vzd.gem.command.commandExecutions.dto
+de.gematik.ti.epa.vzd.gem.command.parser
+de.gematik.ti.epa.vzd.gem.exceptions
+de.gematik.ti.epa.vzd.gem.invoker
+de.gematik.ti.epa.vzd.oauth2
+generated
