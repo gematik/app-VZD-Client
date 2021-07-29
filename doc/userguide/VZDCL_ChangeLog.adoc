@@ -1,0 +1,23 @@
+include::config.adoc[]
+
+== Changelog
+
+=== 1.6.3
+
+Entspricht der Spezifikation nach Version 1.6.3
+
+==== Features
+
+- DeleteCert -> wieder aktiv
+- changeDateTime -> Dateistruktur Anpassung
+- Suchen nach einer Liste von Uids -> siehe link:VZDCL_GettingStarted.adoc#_uidsuche[UidSuche]
+- Neue Parameter (professionOID & entryType) -> link:VZDCL_GettingStarted.adoc#_read_directory_entry_certificate[Read]
+- Neue Opperation -> siehe link:VZDCL_GettingStarted.adoc#_get_server_info[ServerInfo]
+- Umgenennung -> Owner zu Holder
+
+==== Bugfixes
+
+- SaveModifiy -> Holder, MaxKOMLEadr und ProfessionOID werden aus dem eingegebenen Command übernommen
+- Read Parameter angepasst und vollständig
+- UnixTimestamps werden in OffsetDateTime umgewandelt und werfen keine Exception mehr. Damit werden alle Einträge geloggt. Es wird eine Warnung ausgegeben, falls ein solcher Eintrag gelesen wird.
+

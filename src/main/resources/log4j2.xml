@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="toolname">VZD-Client</Property>
+        <Property name="l4j.lvl">${sys:l4j.lvl:-INFO}</Property>
+        <Property name="l4j.logDir">${sys:l4j.logDir:-${sys:java.io.tmpdir}/logs}</Property>
+        <Property name="l4j.logFileName">${sys:l4j.logFileName:-VZD-Client_${date:yyyy-MM-dd_HH-mm-ss.SSSS}}</Property>
+        <Property name="logPattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}: %L - %m%n</Property>
+    </Properties>
+    <Appenders>
+        <File name="file-log" fileName="${l4j.logDir}/${l4j.logFileName}.log" append="false">
+            <PatternLayout pattern="${logPattern}"/>
+        </File>
+        <Console name="console-log">
+            <PatternLayout pattern="${logPattern}"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="de.gematik.ti.epa" level="TRACE" additivity="false">
+            <appender-ref ref="file-log" level="DEBUG"/>
+            <appender-ref ref="console-log" level="${l4j.lvl}"/>
+        </Logger>
+        <Root level="TRACE" additivity="false">
+            <AppenderRef ref="file-log" level="DEBUG"/>
+            <AppenderRef ref="console-log" level="${l4j.lvl}"/>
+        </Root>
+    </Loggers>
+</Configuration>

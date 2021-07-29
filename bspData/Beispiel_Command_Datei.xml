@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CommandList>
+    <!-- readDirectoryEntries -->
+    <Command>
+        <name required="true">readDirectoryEntries</name>
+        <dn>
+            <uid>uid</uid>
+        </dn>
+        <givenName>givenName</givenName>
+        <sn>sn</sn>
+        <cn>cn</cn>
+        <displayName>displayName</displayName>
+        <streetAddress>streetAddress</streetAddress>
+        <postalCode>postalCode</postalCode>
+        <countryCode>countryCode</countryCode>
+        <localityName>localityName</localityName>
+        <stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
+        <title>title</title>
+        <organization>organization</organization>
+        <otherName>otherName</otherName>
+        <telematikID>telematikID</telematikID>
+        <telematikIDSubStr>telematikIdSubStr</telematikIDSubStr>
+        <specialization multiple="true">specialization</specialization>
+        <domainID multiple="true">domainID</domainID>
+        <owner multiple="true">owner</owner>
+        <personalEntry>personalEntry</personalEntry>
+        <dataFromAuthority>dataFromAuthority</dataFromAuthority>
+        <professionOID>professionOID</professionOID>
+        <entryType>entryType</entryType>
+        <baseEntryOnly>baseEntryOnly</baseEntryOnly>
+    </Command>
+    <!-- addDirectoryEntries -->
+    <Command>
+        <name required="true">addDirectoryEntries</name>
+        <displayName>displayName</displayName>
+        <streetAddress>streetAddress</streetAddress>
+        <postalCode>postalCode</postalCode>
+        <localityName>localityName</localityName>
+        <stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
+        <title>title</title>
+        <organization>organization</organization>
+        <otherName>otherName</otherName>
+        <telematikID>telematikID</telematikID>
+        <specialization multiple="true">specialization</specialization>
+        <domainID multiple="true">domainID</domainID>
+        <owner multiple="true">owner</owner>
+        <maxKOMLEadr>maxKOMLEadr</maxKOMLEadr>
+        <UserCertificate>
+            <telematikID>telematikId</telematikID>
+            <usage>usage</usage>
+            <userCertificate>userCertificate</userCertificate>
+            <description>description</description>
+        </UserCertificate>
+    </Command>
+    <!-- readDirectoryEntriesSync -->
+    <Command>
+        <name required="true">readDirectoryEntriesSync</name>
+        <dn>
+            <uid>uid</uid>
+        </dn>
+        <givenName>givenName</givenName>
+        <sn>sn</sn>
+        <cn>cn</cn>
+        <displayName>displayName</displayName>
+        <streetAddress>streetAddress</streetAddress>
+        <postalCode>postalCode</postalCode>
+        <countryCode>countryCode</countryCode>
+        <localityName>localityName</localityName>
+        <stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
+        <title>title</title>
+        <organization>organization</organization>
+        <otherName>otherName</otherName>
+        <telematikID>telematikID</telematikID>
+        <telematikIDSubStr>telematikIdSubStr</telematikIDSubStr>
+        <specialization multiple="true">specialization</specialization>
+        <domainID multiple="true">domainID</domainID>
+        <owner multiple="true">owner</owner>
+        <personalEntry>personalEntry</personalEntry>
+        <dataFromAuthority>dataFromAuthority</dataFromAuthority>
+        <baseEntryOnly>baseEntryOnly</baseEntryOnly>
+    </Command>
+    <!-- modifyDirectoryEntries -->
+    <Command>
+        <name>modifyDirectoryEntries</name>
+        <dn>
+            <uid required="true">uid</uid>
+        </dn>
+        <displayName>displayName</displayName>
+        <streetAddress>streetAddress</streetAddress>
+        <postalCode>postalCode</postalCode>
+        <countryCode>countryCode</countryCode>
+        <localityName>localityName</localityName>
+        <stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
+        <title>title</title>
+        <organization>organization</organization>
+        <otherName>otherName</otherName>
+        <telematikID>telematikID</telematikID>
+        <specialization multiple="true">specialization</specialization>
+        <domainID multiple="true">domainID</domainID>
+        <owner multiple="true">owner</owner>
+        <maxKOMLEadr>maxKOMLEadr</maxKOMLEadr>
+    </Command>
+    <!-- safeModifyDirectoryEntries -->
+    <Command>
+        <name required="true">safeModifyDirectoryEntries</name>
+        <dn>
+            <uid required="true">uid</uid>
+        </dn>
+        <displayName>displayName</displayName>
+        <streetAddress>streetAddress</streetAddress>
+        <postalCode>postalCode</postalCode>
+        <countryCode>countryCode</countryCode>
+        <localityName>localityName</localityName>
+        <stateOrProvinceName>stateOrProvinceName</stateOrProvinceName>
+        <title>title</title>
+        <organization>organization</organization>
+        <otherName>otherName</otherName>
+        <telematikID>telematikID</telematikID>
+        <specialization multiple="true">specialization</specialization>
+        <domainID multiple="true">domainID</domainID>
+        <owner multiple="true">owner</owner>
+        <maxKOMLEadr>maxKOMLEadr</maxKOMLEadr>
+    </Command>
+    <!-- deleteDirectoryEntries -->
+    <Command>
+        <name required="true">deleteDirectoryEntries</name>
+        <dn>
+            <uid required="true">uid</uid>
+        </dn>
+    </Command>
+    <!-- readDirectoryEntryCertificate -->
+    <Command>
+        <name required="true">readDirectoryEntryCertificate</name>
+        <UserCertificate>
+            <dn>
+                <cn>cn</cn>
+            </dn>
+            <entryType>entryType</entryType>
+            <telematikID>telematikId</telematikID>
+            <professionOID>professionOID</professionOID>
+            <usage>usage</usage>
+        </UserCertificate>
+    </Command>
+    <!-- addDirectoryEntryCertificate -->
+    <Command>
+        <name required="true">addDirectoryEntryCertificate</name>
+        <UserCertificate>
+            <telematikID>telematikID</telematikID>
+            <dn>
+                <uid required="true">uid</uid>
+            </dn>
+            <usage>usage</usage>
+            <userCertificate required="true">userCertificate</userCertificate>
+            <description>description</description>
+        </UserCertificate>
+    </Command>
+</CommandList>

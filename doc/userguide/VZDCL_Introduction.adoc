@@ -1,0 +1,8 @@
+ifndef::javadoc[]
+include::config.adoc[]
+endif::javadoc[]
+
+== Introduction
+
+Der VZD-Client dient als Werkzeug um einen Verzeichnisdienst mit Einträgen
+so wie Zertifikaten zu füllen, zu bearbeiten, zu löschen oder auszulesen.
