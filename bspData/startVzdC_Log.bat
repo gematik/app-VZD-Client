@@ -24,4 +24,6 @@ for %%z in (%*) do (
 
 set EXTRA_JVM_ARGUMENTS=%EXTRA_JVM_ARGUMENTS% -Dl4j.logDir=%1
 
+echo %date% %time:~0,8% %0 %* >> %1/vzd-command-history.txt
+
 call java %EXTRA_JVM_ARGUMENTS% -jar %~dp0.\VZD-Client\VZD-Client.jar %*

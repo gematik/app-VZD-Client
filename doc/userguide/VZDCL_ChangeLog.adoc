@@ -2,6 +2,23 @@ include::config.adoc[]
 
 == Changelog
 
+=== 1.6.4
+
+==== Bugfixes
+
+- Nummerierung der Command-Datei wird nun wieder von 1 aufwärts zählend ergänzt und gibt nicht nur den Wert 1 zurück
+- Fehlgeschlagene Aufrufe wegen internen Errors werden nun geloggt
+- ReadSync mapped nun auf den korrekten Typ
+- Leere Listen werden nicht mehr als Suchparameter weitergegeben
+
+==== Features
+
+- Ein `userCertificate` kann nun auch mit Zeilenumbrüchen in die `CommandDatei` geschrieben werden
+- Im Logverzeichnis wird zusätzlich zum Log eine csv-Datei über alle Kommandos und Erfolg/Misserfolg angelegt. Diese sammelt alle abgesendeten Requests -> link:VZDCL_GettingStarted.adoc#_log_csv[LogCsv]
+- Chunking von großen Abfragen ist möglich -> link:VZDCL_GettingStarted.adoc#_chunking[Chunking]
+- Chunking von/bis ist möglich
+- Mit dem Einlesen einer .txt kann nun nicht nur eine Liste von uids verwerten sondern auch eine Liste an TelematikIds -> link:VZDCL_GettingStarted.adoc#_listsuche[ListSuche]
+
 === 1.6.3
 
 Entspricht der Spezifikation nach Version 1.6.3
@@ -10,14 +27,29 @@ Entspricht der Spezifikation nach Version 1.6.3
 
 - DeleteCert -> wieder aktiv
 - changeDateTime -> Dateistruktur Anpassung
-- Suchen nach einer Liste von Uids -> siehe link:VZDCL_GettingStarted.adoc#_uidsuche[UidSuche]
-- Neue Parameter (professionOID & entryType) -> link:VZDCL_GettingStarted.adoc#_read_directory_entry_certificate[Read]
-- Neue Opperation -> siehe link:VZDCL_GettingStarted.adoc#_get_server_info[ServerInfo]
-- Umgenennung -> Owner zu Holder
+
+=== 1.6.2
+
+Entspricht der Spezifikation nach Version 1.6.2
 
 ==== Bugfixes
 
 - SaveModifiy -> Holder, MaxKOMLEadr und ProfessionOID werden aus dem eingegebenen Command übernommen
 - Read Parameter angepasst und vollständig
-- UnixTimestamps werden in OffsetDateTime umgewandelt und werfen keine Exception mehr. Damit werden alle Einträge geloggt. Es wird eine Warnung ausgegeben, falls ein solcher Eintrag gelesen wird.
+- UnixTimestamps werden in OffsetDateTime umgewandelt und werfen keine Exception mehr.
+Damit werden alle Einträge geloggt.
+Es wird eine Warnung ausgegeben, falls ein solcher Eintrag gelesen wird.
 
+==== Features
+
+- Suchen nach einer Liste von Uids -> siehe link:VZDCL_GettingStarted.adoc#_uidsuche[UidSuche]
+
+=== 1.6.0
+
+Entspricht der Spezifikation nach Version 1.6.0
+
+==== Features
+
+- Neue Parameter (professionOID & entryType) -> link:VZDCL_GettingStarted.adoc#_read_directory_entry_certificate[Read]
+- Neue Opperation -> siehe link:VZDCL_GettingStarted.adoc#_get_server_info[ServerInfo]
+- Umgenennung -> Owner zu Holder

@@ -83,6 +83,11 @@ Die Angaben werden wie folgt in eine .txt-Datei geschrieben (die Reihenfolge ist
 * maxExecutionsPerOperation=<Anzahl an parallelen Operationen>
 * logCommands=<boolean default -> false>
 * trustStorePath=<Pfad zu einem spezifischem TrustStore (Default ist hinterlegt)>
+* chunked=<boolean default -> false>
+* chunkSize=<Anzahl `Commands` pro Logfile default -> 100>
+* chunkFrom=<Start `Command` - Nummer für chuncked default -> 1>
+* chunkTill=<Ende `Command` - Nummer für chuncked default -> 999999999999999999>
+* listType=<Art Einträge in der Liste beim Einlesen im .txt Format default -> "uid" link:VZDCL_GettingStarted.adoc#_listsuche[Anleitung hier!]>
 
 Mit dem setzen des `logCommands` wird vor jeder Ausführung eines Befehls dieser vorher geloggt.
 Dies erleichtert das Debuggen.
@@ -147,6 +152,30 @@ Beispiel Aufruf
 java -Dl4j.lvl=DEBUG -Dl4j.logDir=<log_outputdir> -jar <workspace>/vzd<version>.jar <outputdir> -c <workspace>/credentials.txt -p <workspace>/config.txt
 -----------
 
+==== Chunking
+
+Mit den Parametern unter link:VZDCL_GettingStarted.adoc#Dateistruktur[Dateistruktur] beschrieben kann das Chunking eingeschaltet werden, indem `chunked` der Wert `true` übergeben wird.
+Im Logfile Ordner wird ein Unterordner mit der aktuellen Zeit angelegt.
+Die ChunkSize legt fest wie viele Einträge pro Logfile in einer Datei landen sollen.
+Mit `chunkFrom` und `chunkTill` kann angegeben werden von welchem `Command` bis zu welchem `Command` ausgeführt werden soll.
+
+==== Log-CSV
+
+Die csv-Log Datei wird im Logverzeichnis abgelegt und beim Ausführen jedes `Commands` erweitert.
+Sie beinhaltet:
+
+- Date
+- Time
+- SystemUser (Logfile kann auch für Kooperation auf einem Shared Laufwerk abgelegt werden)
+- Credential_User
+- TelematikID
+- ExecutionCommand
+- ExecutionStatus
+- Data
+
+[red]#Achtung, die Datei darf nicht u.a. mit Exel geöffnet sein.
+Andernfalls wirft der Client einen Fehler, dieser führt nicht zum Abbruch der Auftragreihe#
+
 === Ausführen des VZD-Clients mit Proxy
 
 Um den VZD-Client über einen Proxy starten, müssen wie unter <<Dateistruktur>> unter Grundeinstellungen Angaben in der Konfigurationsdatei zu Host und Port angegeben werden.
@@ -181,7 +210,7 @@ Anschließend wird der Request ausgeführt und das Ergebnis in ein Logfile gesch
 
 [[Abarbeitungsworkflow]]
 .Abarbeitungsworkflow (deprecated)
-image::../images/Workfows_VZD.png[width=800]
+image::{imagedir}/Workfows_VZD.png[width=800]
 
 == Operationen
 
@@ -212,7 +241,7 @@ Bei erfolgreicher Durchführung wird jeweils die Antwort `distinguished name` de
 
 Es wird nur überprüft, ob mindestens eins der Attribute nach denen gesucht werden kann angegeben wurde.
 
-Mögliche Parameter für das Lesen eines Entries sind die in der folgenden Funktion genannten:
+Mögliche Parameter für das Lesen eines Entries sind die in der folgenden Funktion genannt:
 
 [source,java]
 .GemDirectoryEntryAdministrationApi.java
@@ -267,8 +296,8 @@ Bei einem Delete Directory Entry Kommando wird die Angabe einer uid vom `VZD-Cli
 Anschließend wird der Löschbefehl gesendet.
 
 Bei einem Delete Directory Entry Certificate Kommando wird die uid aus dem `UserCertificate` aus allen Zertifikaten ausgelesen.
-Dieses muss mit der uid im `BaseDirectorEntry` und innerhalb eines Commandos
-überein stimmen, sofern angegeben. Sobald an einer Stelle eine angegeben wurde wird diese verwendet.
+Dieses muss mit der uid im `BaseDirectorEntry` und innerhalb eines Commandos überein stimmen, sofern angegeben.
+Sobald an einer Stelle eine angegeben wurde wird diese verwendet.
 Außerdem muss ein `cn` im `UserCertificate` angegeben werden.
 Sollte eine dieser Voraussetzungen nicht zutreffen, bricht der VZD die Bearbeitung ab.
 
@@ -302,13 +331,15 @@ Im gegensatz zu dem Modify-Directory-Entry-Befehl wird der Eintrag bei dieser Op
 Der
 `VZD-Client` führt vorher eine Readoperation durch und vergleicht die Daten die unterschiedlich sind und ersetzt die im Command angegebenen Daten.
 
-=== UidSuche
+=== ListSuche
 
-Dies ist die einzige Funktion die eine .txt-Datei als Befehlsdatei entgegen nimmt. Jede Zeile repräsentiert hier eine Uid auf die ein <<_read_directory_entry_certificate, Read>> ausgeführt wird.
+Dies ist die einzige Funktion die eine .txt-Datei als Befehlsdatei entgegen nimmt.
+Jede Zeile repräsentiert hier eine Uid/Telematikid auf die ein <<_read_directory_entry_certificate, Read>> ausgeführt wird. Es kann immer nur entweder Uid oder TelematikIds in einer Datei sein. Der Typ muss in der link:VZDCL_GettingStarted.adoc#Dateistruktur[Configurationsdatei] angegeben werden.
 
 ==== Validitätsprüfung
 
-Es gibt keine Validitätsprüfung. Jede Zeile in der Textdatei wird als Uid eingelesen.
+Es gibt keine Validitätsprüfung.
+Jede Zeile in der Textdatei wird als Uid/TelematikId eingelesen.
 
 ==== Ablauf
 

@@ -18,6 +18,7 @@ public class AddDirEntryExecutionTest {
     public void checkValidationMissingCertificateObjectTest() {
         AddDirEntryExecution addDirEntryExecution = new AddDirEntryExecution(connectionPool);
         CommandType command = new CommandType();
+
         assertFalse(addDirEntryExecution.checkValidation(command));
     }
 

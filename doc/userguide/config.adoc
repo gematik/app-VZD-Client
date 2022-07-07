@@ -15,7 +15,7 @@ ifndef::globalConfig[]
 :source-highlighter: prettify
 
 // where are images located?
-:imagesdir: ../images
+:imagedir: ../images
 :imagesoutdir: ../images
 :testdir: ../../src/test/java/de/gematik/ti
 :sourcedir: ../../src/main/java/de/gematik/ti/epa/vzd/gem

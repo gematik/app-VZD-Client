@@ -50,7 +50,7 @@ public class ReadDirEntrySyncExecutionIntegrationTest {
         ReadDirEntrySyncExecution readDirEntrySyncExecution = new ReadDirEntrySyncExecution(ConnectionPool.createConnectionPool(1));
         ExecutionResult result = readDirEntrySyncExecution
             .executeCommand(commands.get(1), readDirEntrySyncExecution.connectionPool.getConnection());
-        assertEquals(380400, result.getMessage().length());
+        assertEquals(380624, result.getMessage().length());
         assertEquals(200, result.getHttpStatusCode());
         assertEquals(true, result.getResult());
     }

@@ -15,24 +15,27 @@ import org.apache.http.HttpStatus;
 
 public class GetInfoExecution extends ExecutionBase {
 
-    public GetInfoExecution(IConnectionPool connectionPool) {
-        super(connectionPool, CommandNamesEnum.GET_INFO);
-    }
+  public GetInfoExecution(IConnectionPool connectionPool) {
+    super(connectionPool, CommandNamesEnum.GET_INFO);
+  }
 
-    @Override
-    public boolean checkValidation(CommandType command) {
-        return true;
-    }
+  @Override
+  public boolean checkValidation(CommandType command) {
+    return true;
+  }
 
-    @Override
-    protected ExecutionResult executeCommand(CommandType command, GemApiClient apiClient) throws ApiException, DatatypeConfigurationException {
-        ApiResponse<InfoObject> response= new GemGetInfoDirectoryEntryAdministrationApi(apiClient).getInfoWithHttpInfo();
-        if(response.getStatusCode() == HttpStatus.SC_OK){
-            return new ExecutionResult("\nGet info execution successful operated\n" + response.getData(), true, response.getStatusCode());
-        }
-        throw new ApiException(response.getStatusCode(),
-            "Add directory entry execution failed. Response status was: "
-                + response.getStatusCode() + "\n"
-                + Transformer.getCreateDirectoryEntry(command));
+  @Override
+  protected ExecutionResult executeCommand(CommandType command, GemApiClient apiClient)
+      throws ApiException, DatatypeConfigurationException {
+    ApiResponse<InfoObject> response = new GemGetInfoDirectoryEntryAdministrationApi(
+        apiClient).getInfoWithHttpInfo();
+    if (response.getStatusCode() == HttpStatus.SC_OK) {
+      return new ExecutionResult("\nGet info execution successful operated\n" + response.getData(),
+          true, response.getStatusCode());
     }
+    throw new ApiException(response.getStatusCode(),
+        "Add directory entry execution failed. Response status was: "
+            + response.getStatusCode() + "\n"
+            + Transformer.getCreateDirectoryEntry(command));
+  }
 }

@@ -9,6 +9,7 @@ import generated.CommandType;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,7 +72,7 @@ public class ConfigHandlerTest {
     public void checkRightCommandsWithFilePath() {
         ConfigHandler configHandler = ConfigHandler.init(TEST_ARGS_WITH_COMMANDPATH_AND_PROXY_IN_FILE);
 
-        assertEquals(new File("src\\test\\resources\\config\\Commands.xml").getAbsolutePath(), configHandler.getCommandsPath());
+        assertEquals(new File(FilenameUtils.separatorsToSystem("src\\test\\resources\\config\\Commands.xml")).getAbsolutePath(), configHandler.getCommandsPath());
     }
 
     @Test

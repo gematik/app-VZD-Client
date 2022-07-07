@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface CommandParser {
 
-    List<CommandType> buildCommands();
+  List<CommandType> buildCommands();
 }

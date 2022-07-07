@@ -2,6 +2,30 @@
 
 ## Changelog
 
+### 1.6.4
+
+#### Bugfixes
+
+-   Nummerierung der Command-Datei wird nun wieder von 1 aufwärts zählend ergänzt und gibt nicht nur den Wert 1 zurück
+
+-   Fehlgeschlagene Aufrufe wegen internen Errors werden nun geloggt
+
+-   ReadSync mapped nun auf den korrekten Typ
+
+-   Leere Listen werden nicht mehr als Suchparameter weitergegeben
+
+#### Features
+
+-   Ein `userCertificate` kann nun auch mit Zeilenumbrüchen in die `CommandDatei` geschrieben werden
+
+-   Im Logverzeichnis wird zusätzlich zum Log eine csv-Datei über alle Kommandos und Erfolg/Misserfolg angelegt. Diese sammelt alle abgesendeten Requests → [LogCsv](VZDCL_GettingStarted.adoc#_log_csv)
+
+-   Chunking von großen Abfragen ist möglich → [Chunking](VZDCL_GettingStarted.adoc#_chunking)
+
+-   Chunking von/bis ist möglich
+
+-   Mit dem Einlesen einer .txt kann nun nicht nur eine Liste von uids verwerten sondern auch eine Liste an TelematikIds → [ListSuche](VZDCL_GettingStarted.adoc#_listsuche)
+
 ### 1.6.3
 
 Entspricht der Spezifikation nach Version 1.6.3
@@ -12,13 +36,9 @@ Entspricht der Spezifikation nach Version 1.6.3
 
 -   changeDateTime → Dateistruktur Anpassung
 
--   Suchen nach einer Liste von Uids → siehe [UidSuche](VZDCL_GettingStarted.adoc#_uidsuche)
+### 1.6.2
 
--   Neue Parameter (professionOID & entryType) → [Read](VZDCL_GettingStarted.adoc#_read_directory_entry_certificate)
-
--   Neue Opperation → siehe [ServerInfo](VZDCL_GettingStarted.adoc#_get_server_info)
-
--   Umgenennung → Owner zu Holder
+Entspricht der Spezifikation nach Version 1.6.2
 
 #### Bugfixes
 
@@ -26,7 +46,25 @@ Entspricht der Spezifikation nach Version 1.6.3
 
 -   Read Parameter angepasst und vollständig
 
--   UnixTimestamps werden in OffsetDateTime umgewandelt und werfen keine Exception mehr. Damit werden alle Einträge geloggt. Es wird eine Warnung ausgegeben, falls ein solcher Eintrag gelesen wird.
+-   UnixTimestamps werden in OffsetDateTime umgewandelt und werfen keine Exception mehr.
+    Damit werden alle Einträge geloggt.
+    Es wird eine Warnung ausgegeben, falls ein solcher Eintrag gelesen wird.
+
+#### Features
+
+-   Suchen nach einer Liste von Uids → siehe [UidSuche](VZDCL_GettingStarted.adoc#_uidsuche)
+
+### 1.6.0
+
+Entspricht der Spezifikation nach Version 1.6.0
+
+#### Features
+
+-   Neue Parameter (professionOID & entryType) → [Read](VZDCL_GettingStarted.adoc#_read_directory_entry_certificate)
+
+-   Neue Opperation → siehe [ServerInfo](VZDCL_GettingStarted.adoc#_get_server_info)
+
+-   Umgenennung → Owner zu Holder
 
 ## Introduction
 
@@ -141,6 +179,16 @@ Optional:
 
     -   trustStorePath=&lt;Pfad zu einem spezifischem TrustStore (Default ist hinterlegt)&gt;
 
+    -   chunked=&lt;boolean default → false&gt;
+
+    -   chunkSize=&lt;Anzahl `Commands` pro Logfile default → 100&gt;
+
+    -   chunkFrom=&lt;Start `Command` - Nummer für chuncked default → 1&gt;
+
+    -   chunkTill=&lt;Ende `Command` - Nummer für chuncked default → 999999999999999999&gt;
+
+    -   listType=&lt;Art Einträge in der Liste beim Einlesen im .txt Format default → "uid" [Anleitung hier!](VZDCL_GettingStarted.adoc#_listsuche)&gt;
+
 Mit dem setzen des `logCommands` wird vor jeder Ausführung eines Befehls dieser vorher geloggt.
 Dies erleichtert das Debuggen.
 
@@ -200,6 +248,37 @@ Beispiel Aufruf
 
     java -Dl4j.lvl=DEBUG -Dl4j.logDir=<log_outputdir> -jar <workspace>/vzd<version>.jar <outputdir> -c <workspace>/credentials.txt -p <workspace>/config.txt
 
+#### Chunking
+
+Mit den Parametern unter [Dateistruktur](VZDCL_GettingStarted.adoc#Dateistruktur) beschrieben kann das Chunking eingeschaltet werden, indem `chunked` der Wert `true` übergeben wird.
+Im Logfile Ordner wird ein Unterordner mit der aktuellen Zeit angelegt.
+Die ChunkSize legt fest wie viele Einträge pro Logfile in einer Datei landen sollen.
+Mit `chunkFrom` und `chunkTill` kann angegeben werden von welchem `Command` bis zu welchem `Command` ausgeführt werden soll.
+
+#### Log-CSV
+
+Die csv-Log Datei wird im Logverzeichnis abgelegt und beim Ausführen jedes `Commands` erweitert.
+Sie beinhaltet:
+
+-   Date
+
+-   Time
+
+-   SystemUser (Logfile kann auch für Kooperation auf einem Shared Laufwerk abgelegt werden)
+
+-   Credential\_User
+
+-   TelematikID
+
+-   ExecutionCommand
+
+-   ExecutionStatus
+
+-   Data
+
+Achtung, die Datei darf nicht u.a. mit Exel geöffnet sein.
+Andernfalls wirft der Client einen Fehler, dieser führt nicht zum Abbruch der Auftragreihe
+
 ### Ausführen des VZD-Clients mit Proxy
 
 Um den VZD-Client über einen Proxy starten, müssen wie unter [Dateistruktur](#Dateistruktur) unter Grundeinstellungen Angaben in der Konfigurationsdatei zu Host und Port angegeben werden.
@@ -231,9 +310,7 @@ In der Abarbeitung gibt es jedoch leichte Unterschiede, die unter
 [Abarbeiungsflows](#Abarbeiungsflows) behandelt werden.Vor dem Ausführen des Requests wird überprüft, ob der OAuth2 Token noch Gültigkeit besitzt.
 Anschließend wird der Request ausgeführt und das Ergebnis in ein Logfile geschrieben, das ausgewertet werden kann.
 
-<figure>
-<img src="../images/Workfows_VZD.png" id="Abarbeitungsworkflow" alt="Abarbeitungsworkflow (deprecated)" /><figcaption aria-hidden="true">Abarbeitungsworkflow (deprecated)</figcaption>
-</figure>
+![Abarbeitungsworkflow (deprecated)](../images/Workfows_VZD.png)
 
 ## Operationen
 
@@ -264,22 +341,26 @@ Bei erfolgreicher Durchführung wird jeweils die Antwort `distinguished name` de
 
 Es wird nur überprüft, ob mindestens eins der Attribute nach denen gesucht werden kann angegeben wurde.
 
-Mögliche Parameter für das Lesen eines Entries sind die in der folgenden Funktion genannten:
+Mögliche Parameter für das Lesen eines Entries sind die in der folgenden Funktion genannt:
 
-**GemDirectoryEntryAdministrationApi.java**
+**GemDirectoryEntryAdministrationApi.java.**
 
-        public Call readDirectoryEntryCall(String uid, String givenName, String sn, String cn, String displayName, String streetAddress,
-            String postalCode, String countryCode, String localityName, String stateOrProvinceName, String title, String organization, String otherName,
-            String telematikID, String telematikIDSubStr, String specialization, String domainID, String holder, String personalEntry,
-            String dataFromAuthority, String professionOID, String entryType, Boolean baseEntryOnly, final ApiCallback _callback)
+      public Call readDirectoryEntryCall(String uid, String givenName, String sn, String cn,
+          String displayName, String streetAddress,
+          String postalCode, String countryCode, String localityName, String stateOrProvinceName,
+          String title, String organization, String otherName,
+          String telematikID, String telematikIDSubStr, String specialization, String domainID,
+          String holder, String personalEntry,
+          String dataFromAuthority, String professionOID, String entryType, Boolean baseEntryOnly,
+          final ApiCallback _callback)
 
 Mögliche Parameter für das Lesen eines Zertifikats (hierbei wird nur das Element `UserCertificate` betrachtet):
 
-**GemDirectoryEntryAdministrationApi.java**
+**GemDirectoryEntryAdministrationApi.java.**
 
-        public okhttp3.Call readDirectoryCertificatesCall(String uid, String certificateEntryID,
-            String entryType, String telematikID, String professionOID, String usage,
-            final ApiCallback _callback)
+      public okhttp3.Call readDirectoryCertificatesCall(String uid, String certificateEntryID,
+          String entryType, String telematikID, String professionOID, String usage,
+          final ApiCallback _callback)
 
 #### Ablauf
 
@@ -320,8 +401,8 @@ Bei einem Delete Directory Entry Kommando wird die Angabe einer uid vom `VZD-Cli
 Anschließend wird der Löschbefehl gesendet.
 
 Bei einem Delete Directory Entry Certificate Kommando wird die uid aus dem `UserCertificate` aus allen Zertifikaten ausgelesen.
-Dieses muss mit der uid im `BaseDirectorEntry` und innerhalb eines Commandos
-überein stimmen, sofern angegeben. Sobald an einer Stelle eine angegeben wurde wird diese verwendet.
+Dieses muss mit der uid im `BaseDirectorEntry` und innerhalb eines Commandos überein stimmen, sofern angegeben.
+Sobald an einer Stelle eine angegeben wurde wird diese verwendet.
 Außerdem muss ein `cn` im `UserCertificate` angegeben werden.
 Sollte eine dieser Voraussetzungen nicht zutreffen, bricht der VZD die Bearbeitung ab.
 
@@ -355,13 +436,15 @@ Im gegensatz zu dem Modify-Directory-Entry-Befehl wird der Eintrag bei dieser Op
 Der
 `VZD-Client` führt vorher eine Readoperation durch und vergleicht die Daten die unterschiedlich sind und ersetzt die im Command angegebenen Daten.
 
-### UidSuche
+### ListSuche
 
-Dies ist die einzige Funktion die eine .txt-Datei als Befehlsdatei entgegen nimmt. Jede Zeile repräsentiert hier eine Uid auf die ein [Read](#_read_directory_entry_certificate) ausgeführt wird.
+Dies ist die einzige Funktion die eine .txt-Datei als Befehlsdatei entgegen nimmt.
+Jede Zeile repräsentiert hier eine Uid/Telematikid auf die ein [Read](#_read_directory_entry_certificate) ausgeführt wird. Es kann immer nur entweder Uid oder TelematikIds in einer Datei sein. Der Typ muss in der [Configurationsdatei](VZDCL_GettingStarted.adoc#Dateistruktur) angegeben werden.
 
 #### Validitätsprüfung
 
-Es gibt keine Validitätsprüfung. Jede Zeile in der Textdatei wird als Uid eingelesen.
+Es gibt keine Validitätsprüfung.
+Jede Zeile in der Textdatei wird als Uid/TelematikId eingelesen.
 
 #### Ablauf
 

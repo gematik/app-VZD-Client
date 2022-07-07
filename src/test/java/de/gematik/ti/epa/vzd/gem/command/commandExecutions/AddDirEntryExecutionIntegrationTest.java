@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import de.gematik.ti.epa.vzd.client.invoker.ApiException;
 import de.gematik.ti.epa.vzd.gem.command.CommandsBuilder;
 import de.gematik.ti.epa.vzd.gem.command.ExecutionCollection;
+import de.gematik.ti.epa.vzd.gem.exceptions.CommandException;
 import de.gematik.ti.epa.vzd.gem.invoker.ConfigHandler;
 import de.gematik.ti.epa.vzd.gem.invoker.ConnectionPool;
 import generated.CommandType;
@@ -70,9 +71,9 @@ public class AddDirEntryExecutionIntegrationTest {
     @Test
     public void executeCommandDifferentTelematikIdTest() {
         AddDirEntryExecution addDirEntryExecution = new AddDirEntryExecution(ConnectionPool.createConnectionPool(1));
-        ApiException exception = assertThrows(ApiException.class,
+        Exception exception = assertThrows(CommandException.class,
             () -> addDirEntryExecution.executeCommand(commands.get(2), addDirEntryExecution.connectionPool.getConnection()));
-        assertEquals(405, exception.getCode());
+        assertEquals("At least two different TelematikIds found in command -> [OtherFailTelematikId, FailTelematikId]", exception.getMessage());
     }
 
 }

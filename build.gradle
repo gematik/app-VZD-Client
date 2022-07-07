@@ -1,13 +1,15 @@
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
     }
 }
 
 buildscript {
     dependencies {
-        classpath 'de.gematik:gematik-parent-plugin:1.2.1'
-        classpath 'de.gematik:documentation-plugin:1.1.2'
+        classpath 'de.gematik:gematik-parent-plugin:1.3.0-SNAPSHOT'
+        //Todo activate after documentation-plugin is updated
+//        classpath 'de.gematik:documentation-plugin:1.1.2'
     }
     repositories {
         mavenCentral()
@@ -19,7 +21,7 @@ buildscript {
 
 apply plugin: 'de.gematik.parent'
 apply plugin: 'de.gematik.publish'
-apply plugin: 'de.gematik.asciidoctor'
+//apply plugin: 'de.gematik.asciidoctor'
 apply plugin: 'distribution'
 
 group = 'de.gematik.ti.epa'
@@ -40,29 +42,32 @@ configurations {
 }
 
 dependencies {
-    implementation 'io.swagger:swagger-annotations:1.5.22'
+    implementation 'io.swagger:swagger-annotations:1.6.6'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.2'
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'io.gsonfire:gson-fire:1.8.3'
-    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'io.gsonfire:gson-fire:1.8.5'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:1.0.2'
     implementation 'org.apache.oltu.oauth2:org.apache.oltu.oauth2.common:1.0.2'
-    implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
-    implementation 'org.apache.httpcomponents:httpclient:4.5'
-    implementation 'org.slf4j:slf4j-api:1.7.9'
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    implementation 'commons-io:commons-io:2.5'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
     jaxb 'com.sun.xml.bind:jaxb-xjc:2.3.1'
     jaxb 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
-    testImplementation 'junit:junit:4.13'
-    testImplementation 'org.mockito:mockito-core:3.1.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:4.5.1'
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     manifest.attributes 'Main-Class': 'de.gematik.ti.epa.vzd.gem.Main'
     manifest.attributes 'version': new File('./version.txt').withReader { reader -> reader.readLine() }
     baseName project.name
@@ -83,8 +88,8 @@ task jaxb {
         ant.xjc(
                 destdir: '${jaxbTargetDir}',
                 package: 'generated',
-                schema: 'src/main/resources/xsd/commands.xsd',
-                binding: 'src/main/resources/jaxb-binding/binding.xml',
+                schema: 'src/main/resources/jaxb/commands.xsd',
+                binding: 'src/main/resources/jaxb/binding.xml',
                 extension: 'true')
     }
 }
@@ -133,7 +138,6 @@ gematikPublish {
 
 distributions {
     main {
-        baseName = project.name
         contents {
             into(project.name) {
                 from jar
@@ -156,6 +160,14 @@ distributions {
     }
 }
 
+tasks.named("build") { finalizedBy("copyZipToLibFolder") }
+
+tasks.register("copyZipToLibFolder",Copy) {
+    from layout.buildDirectory.file("distributions/VZD-Client-1.6.4-SNAPSHOT.zip")
+    into layout.buildDirectory.dir("libs")
+}
+
+
 test {
     include '**/UnitTestsuite.class'
     include '**/IntegrationTestsuite.class'
@@ -170,3 +182,5 @@ jacocoTestReport {
         csv.enabled false
     }
 }
+
+checkstyle { sourceSets = [] }

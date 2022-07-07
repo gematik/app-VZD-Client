@@ -2,16 +2,16 @@ package de.gematik.ti.epa.vzd.gem.invoker;
 
 public interface IConnectionPool {
 
-    GemApiClient getConnection() throws InterruptedException;
+  GemApiClient getConnection() throws InterruptedException;
 
-    void releaseConnection(GemApiClient gemApiClient);
+  void releaseConnection(GemApiClient gemApiClient);
 
-    void reset();
+  void reset();
 
-    int getConnectionSize();
+  int getConnectionSize();
 
-    int getAvailableConnectionSize();
+  int getAvailableConnectionSize();
 
-    int getUsedConnectionSize();
+  int getUsedConnectionSize();
 
 }

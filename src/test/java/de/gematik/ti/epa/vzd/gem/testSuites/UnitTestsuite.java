@@ -13,6 +13,7 @@ import de.gematik.ti.epa.vzd.gem.command.commandExecutions.ReadDirEntryCertExecu
 import de.gematik.ti.epa.vzd.gem.command.commandExecutions.ReadDirEntryExecutionTest;
 import de.gematik.ti.epa.vzd.gem.command.commandExecutions.SafeModifyDirExecutionTest;
 import de.gematik.ti.epa.vzd.gem.invoker.ConfigHandlerTest;
+import de.gematik.ti.epa.vzd.gem.utils.LogHelperTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -34,7 +35,10 @@ import org.junit.runners.Suite.SuiteClasses;
     ExecutionCollectionTest.class,
     TransformerTest.class,
     // Invoker
-    ConfigHandlerTest.class})
+    ConfigHandlerTest.class,
+    //Utils
+    LogHelperTest.class
+})
 public class UnitTestsuite {
 
 }

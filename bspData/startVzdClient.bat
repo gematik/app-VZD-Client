@@ -21,4 +21,6 @@ for %%z in (%*) do (
 	if "%%z"=="-warn" set EXTRA_JVM_ARGUMENTS=-Dl4j.lvl=WARN
 )
 
+echo %date% %time:~0,8% %0 %* >> %1/vzd-command-history.txt
+
 call java %EXTRA_JVM_ARGUMENTS% -jar %~dp0.\VZD-Client\VZD-Client.jar %*

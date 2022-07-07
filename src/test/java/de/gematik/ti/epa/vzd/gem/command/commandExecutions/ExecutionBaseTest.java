@@ -2,7 +2,6 @@ package de.gematik.ti.epa.vzd.gem.command.commandExecutions;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 
 import de.gematik.ti.epa.vzd.client.invoker.ApiException;
 import de.gematik.ti.epa.vzd.client.invoker.auth.OAuth;

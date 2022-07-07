@@ -1,0 +1,6 @@
+@Library('gematik-jenkins-shared-library') _
+
+pipelineGitHubPublish {
+    GITHUB_PROJECT_NAME = 'app-VZD-Client.git'
+    GEMATIK_PROJECT_NAME = 'refImpl/netzwerk-und-infrastrukturdienste/vzd-client.git'
+}

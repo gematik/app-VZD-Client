@@ -19,45 +19,50 @@ import org.junit.Test;
 
 public class AddDirEntryCertExecutionIntegrationTest {
 
-    private static final String[] TEST_ARGS = new String[]{"-p",
-        "src" + File.separator + "test" + File.separator + "resources" + File.separator
-            + "config" + File.separator + "IntegrationConfig.txt", "-c",
-        "src" + File.separator + "test" + File.separator + "resources" + File.separator
-            + "config" + File.separator + "Credentials.txt", "-b", "src" + File.separator + "test" + File.separator + "resources" + File.separator
-        + "config" + File.separator + "commands" + File.separator + "addCert.xml"};
-    public static List<CommandType> commands;
+  private static final String[] TEST_ARGS = new String[]{"-p",
+      "src" + File.separator + "test" + File.separator + "resources" + File.separator
+          + "config" + File.separator + "IntegrationConfig.txt", "-c",
+      "src" + File.separator + "test" + File.separator + "resources" + File.separator
+          + "config" + File.separator + "Credentials.txt", "-b",
+      "src" + File.separator + "test" + File.separator + "resources" + File.separator
+          + "config" + File.separator + "commands" + File.separator + "addCert.xml"};
+  public static List<CommandType> commands;
 
-    @Before
-    public void initConfigHandler() {
-        ConfigHandler.setConfigHandler(null);
-        ConfigHandler.init(TEST_ARGS);
-        ExecutionCollection.init(ConnectionPool.createConnectionPool(1));
-        commands = new CommandsBuilder().buildCommands();
-    }
+  @Before
+  public void initConfigHandler() {
+    ConfigHandler.setConfigHandler(null);
+    ConfigHandler.init(TEST_ARGS);
+    ExecutionCollection.init(ConnectionPool.createConnectionPool(1));
+    commands = new CommandsBuilder().buildCommands();
+  }
 
-    @After
-    public void unsetConfigHandler() {
-        ConfigHandler.setConfigHandler(null);
-        ExecutionCollection.getInstance().setExecutionCollection(null);
-    }
+  @After
+  public void unsetConfigHandler() {
+    ConfigHandler.setConfigHandler(null);
+    ExecutionCollection.getInstance().setExecutionCollection(null);
+  }
 
-    @Test
-    public void addCommandSuccessTest() throws Exception {
-        AddDirEntryCertExecution addDirEntryCertExecution = new AddDirEntryCertExecution(ConnectionPool.createConnectionPool(1));
-        assertTrue(addDirEntryCertExecution.createCallable(commands.get(0)).call());
-    }
+  @Test
+  public void addCommandSuccessTest() throws Exception {
+    AddDirEntryCertExecution addDirEntryCertExecution = new AddDirEntryCertExecution(
+        ConnectionPool.createConnectionPool(1));
+    assertTrue(addDirEntryCertExecution.createCallable(commands.get(0)).call());
+  }
 
-    @Test
-    public void addCommandFailTest() throws Exception {
-        AddDirEntryCertExecution addDirEntryCertExecution = new AddDirEntryCertExecution(ConnectionPool.createConnectionPool(1));
-        assertFalse(addDirEntryCertExecution.createCallable(commands.get(1)).call());
-    }
+  @Test
+  public void addCommandFailTest() throws Exception {
+    AddDirEntryCertExecution addDirEntryCertExecution = new AddDirEntryCertExecution(
+        ConnectionPool.createConnectionPool(1));
+    assertFalse(addDirEntryCertExecution.createCallable(commands.get(1)).call());
+  }
 
-    @Test
-    public void executeCommandExceptionTest() {
-        AddDirEntryCertExecution addDirEntryCertExecution = new AddDirEntryCertExecution(ConnectionPool.createConnectionPool(1));
-        ApiException exception = assertThrows(ApiException.class,
-            () -> addDirEntryCertExecution.executeCommand(commands.get(1), addDirEntryCertExecution.connectionPool.getConnection()));
-        assertEquals(422, exception.getCode());
-    }
+  @Test
+  public void executeCommandExceptionTest() {
+    AddDirEntryCertExecution addDirEntryCertExecution = new AddDirEntryCertExecution(
+        ConnectionPool.createConnectionPool(1));
+    ApiException exception = assertThrows(ApiException.class,
+        () -> addDirEntryCertExecution.executeCommand(commands.get(1),
+            addDirEntryCertExecution.connectionPool.getConnection()));
+    assertEquals(422, exception.getCode());
+  }
 }
