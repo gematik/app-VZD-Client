@@ -10,5 +10,6 @@ de.gematik.ti.epa.vzd.gem.command.commandExecutions.dto
 de.gematik.ti.epa.vzd.gem.command.parser
 de.gematik.ti.epa.vzd.gem.exceptions
 de.gematik.ti.epa.vzd.gem.invoker
+de.gematik.ti.epa.vzd.gem.utils
 de.gematik.ti.epa.vzd.oauth2
 generated
