@@ -7,7 +7,7 @@ allprojects {
 
 buildscript {
     dependencies {
-        classpath 'de.gematik:gematik-parent-plugin:1.3.0-SNAPSHOT'
+        classpath 'de.gematik:gematik-parent-plugin:1.3.2'
         //Todo activate after documentation-plugin is updated
 //        classpath 'de.gematik:documentation-plugin:1.1.2'
     }
@@ -182,5 +182,3 @@ jacocoTestReport {
         csv.enabled false
     }
 }
-
-checkstyle { sourceSets = [] }

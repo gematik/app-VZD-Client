@@ -101,7 +101,7 @@ Der `VZD-Client` kann als git repository oder von Maven Central heruntergeladen 
 
 ### Build setup
 
-Zum Compilieren des `VZD-Clients` wird das Verwenden von Java11 und gradle 5.6.2 empfohlen.
+Zum Compilieren des `VZD-Clients` wird das Verwenden von Java11 und gradle 7.1 empfohlen.
 
 Nach dem Compilieren wird eine .zip-Datei in den build/distributions Ordner abgelegt.
 Dieser enthält eine ausführbare .bat-Datei.
